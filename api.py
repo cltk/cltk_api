@@ -1,6 +1,7 @@
 """Main API file for backend CLTK webapp."""
 
 import os
+import pdb
 
 from flask import Flask
 from flask_restful import Resource, Api
@@ -42,10 +43,27 @@ class Texts(Resource):
         dir_contents = [f.casefold() for f in dir_contents]  # this probably isn't nec
         return {'texts': sorted(dir_contents)}
 
+class Text(Resource):
+    def get(self, lang, author_name, fname):
+        print(True)
+        text_path = os.path.expanduser('~') + '/cltk_data/' + lang + '/text/' + lang + '_text_perseus/' + author_name + '/opensource/' + fname
+        if lang == 'greek':
+            ending = '_gk.xml.json'
+        elif lang == 'latin':
+            ending = '_lat.xml.json'
+
+        text_path += ending
+
+        print( '********', text_path )
+        with open( text_path, "r" ) as f:
+
+            file_string = f.read()
+
+        return { fname : file_string }
 
 api.add_resource(Authors, '/<string:lang>/authors')
 api.add_resource(Texts, '/<string:lang>/author/<string:author_name>/texts')
-#api.add_resource(Text, '/<string:lang>/author/<string:author_name>/text/<aeneid>')  # Luke is doing
+api.add_resource(Text, '/<string:lang>/author/<string:author_name>/text/<string:fname>')  # Luke is doing
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
 api.add_resource(HelloWorld, '/')
 
