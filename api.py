@@ -5,8 +5,10 @@ import pdb
 
 from flask import Flask, request
 from flask_restful import Resource, Api
+from flask.ext.pymongo import PyMongo
 
 app = Flask(__name__)
+mongo = PyMongo(app)
 api = Api(app)
 
 # example
