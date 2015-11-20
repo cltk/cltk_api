@@ -1,6 +1,7 @@
 """Main API file for backend CLTK webapp."""
 
 import os
+import pdb
 
 from flask import Flask, request
 from flask_restful import Resource, Api
@@ -44,8 +45,8 @@ class Texts(Resource):
 
 class Text(Resource):
     def get(self, lang, author_name, fname):
-        text_path = os.path.expanduser('~/cltk_data/' + lang + '/text/' + lang + '_text_perseus/' + author_name.casefold() + '/opensource/' + fname )  # casefold() prob not nec
-        dir_contents = os.listdir(text_path)
+        print(True)
+        text_path = os.path.expanduser('~') + '/cltk_data/' + lang + '/text/' + lang + '_text_perseus/' + author_name + '/opensource/' + fname
         if lang == 'greek':
             ending = '_gk.xml.json'
         elif lang == 'latin':
