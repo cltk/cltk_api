@@ -34,7 +34,11 @@ class Texts(Resource):
     def get(self, lang, author_name):
         text_path = os.path.expanduser('~/cltk_data/' + lang + '/text/' + lang + '_text_perseus/' + author_name.casefold() + '/opensource')  # casefold() prob not nec
         dir_contents = os.listdir(text_path)
-        dir_contents = [f for f in dir_contents if f.endswith('_lat.xml')]
+        if lang == 'greek':
+            ending = '_gk.xml.json'
+        elif lang == 'latin':
+            ending = '_lat.xml.json'
+        dir_contents = [f for f in dir_contents if f.endswith(ending)]
         dir_contents = [f.casefold() for f in dir_contents]  # this probably isn't nec
         return {'texts': sorted(dir_contents)}
 
