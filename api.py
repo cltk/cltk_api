@@ -209,8 +209,13 @@ class Text(Resource):
         q_section_4 = request.args.get('section_4')
         q_section_5 = request.args.get('section_5')
 
+        if not q_section_1:
+            return {'refs_decl': refs_decls,
+                    'filepath': text_path,
+                    'section_types': section_types,
+                    'text': file_json['TEI.2']['text']['body']
+                    }
 
-        returned_text = []
 
         # Parse text according to query string
         section_1_list = file_json['TEI.2']['text']['body']['div1']
@@ -229,6 +234,23 @@ class Text(Resource):
             if section_1_number == q_section_1:
                 #print('section_1.keys()', section_1.keys())
                 section_1_list = section_1['l']  # list
+
+                # cleanup lines
+                return_section_1_list = []
+                for line in section_1_list:
+                    if type(line) is dict:
+                        line = line['#text']
+                    return_section_1_list.append(line)
+
+                if not q_section_2:
+                    # http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a?section_1=12
+                    # http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od?section_1=1
+                    return {'refs_decl': refs_decls,
+                            'filepath': text_path,
+                            'section_types': section_types,
+                            'text': return_section_1_list
+                            }
+
 
                 for counter, section_2_item in enumerate(section_1_list):
                     if type(section_2_item) is dict:
