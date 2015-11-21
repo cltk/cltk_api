@@ -77,11 +77,6 @@ class Texts(Resource):
 class Text(Resource):
     def get(self, lang, corpus_name, author_name, fname):
 
-        # parse query string
-        book = request.args.get('book')
-        line = request.args.get('line')
-        print('***', book, line)
-
         text_path = os.path.expanduser(
             '~/cltk_data/') + lang + '/text/' + lang + '_text_' + corpus_name + '/' + author_name + '/opensource/' + fname
         ending = ''
@@ -206,9 +201,35 @@ class Text(Resource):
                     unit = state['@unit']
                     section_types.append([unit])
 
+
+        # Parse query strings
+        q_section_1 = request.args.get('section_1')
+        q_section_2 = request.args.get('section_2')
+        q_section_3 = request.args.get('section_3')
+        q_section_4 = request.args.get('section_4')
+        q_section_5 = request.args.get('section_5')
+
+        # Parse text according to query string
+        section_1_list = file_json['TEI.2']['text']['body']['div1']
+        for section_1 in section_1_list:
+            print('q_section_1', q_section_1)
+            print('q_section_2', q_section_2)
+
+            print('section_1.keys()', section_1.keys())
+            section_1_type = section_1['@type']  # str
+            section_1_number = section_1['@n']  # str
+            section_1_line = section_1['l']  # list
+            print('section_1_type', section_1_type)
+            print('section_1_number', section_1_number)
+            print(section_1_line[0])
+
+            if
+
+
         return {'refs_decl': refs_decls,
                 'filepath': text_path,
                 'section_types': section_types,
+                'text': section_1_list,
                 }
 
 # http://localhost:5000/lang/greek/corpus/perseus/authors
