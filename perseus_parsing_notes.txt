@@ -145,123 +145,199 @@ Vitruvius
 ## Greek
 
 Aeschines
+    http://localhost:5000/lang/greek/corpus/perseus/author/Aeschines/text/aeschin
 
 Aeschylus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Aeschylus/text/aesch.ag
 
 Andocides
+    http://localhost:5000/lang/greek/corpus/perseus/author/Andocides/text/andoc
 
 Anth
+    http://localhost:5000/lang/greek/corpus/perseus/author/anth/text/01
 
 Apollodorus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Apollodorus/text/apollod
 
 Apollonius
+    http://localhost:5000/lang/greek/corpus/perseus/author/apollonius/text/argo
 
 Appian
+    http://localhost:5000/lang/greek/corpus/perseus/author/appian/text/appian.cw
 
 Aratus
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/aratus/text/aratus_01
+    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
 
 Aretaeus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Aretaeus/text/aret
 
 Aristides
+    http://localhost:5000/lang/greek/corpus/perseus/author/Aristides/text/aristid.orat
 
 Aristophanes
+    http://localhost:5000/lang/greek/corpus/perseus/author/Aristophanes/text/aristoph.ach
 
 Aristotle
+    http://localhost:5000/lang/greek/corpus/perseus/author/Aristotle/text/aristot.ath.pol
 
 Arrian
+    http://localhost:5000/lang/greek/corpus/perseus/author/Arrian/text/arrian.acies
+    http://localhost:5000/lang/greek/corpus/perseus/author/Arrian/text/arrian.indica
 
 Athenaeus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Athenaeus/text/ath01
 
 Bacchylides
+    http://localhost:5000/lang/greek/corpus/perseus/author/Bacchylides/text/bacchyl
 
 Bible
+    http://localhost:5000/lang/greek/corpus/perseus/author/Bible/text/nt
 
 Callimachus
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Callimachus/texts
+    empty list
 
 Colluthus
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Colluthus/text/colluthus.01
+    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
 
 Demades
+    http://localhost:5000/lang/greek/corpus/perseus/author/Demades/text/demad
 
 Demosthenes
+    http://localhost:5000/lang/greek/corpus/perseus/author/Demosthenes/text/dem01-10
 
 Dinarchus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Dinarchus/text/din
 
 DioChrys
+    http://localhost:5000/lang/greek/corpus/perseus/author/DioChrys/text/diochr01
 
 Diodorus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Diodorus/text/diod.hist01-05
 
 Diogenes
+    http://localhost:5000/lang/greek/corpus/perseus/author/Diogenes/text/dl
 
 Dionysius
+    http://localhost:5000/lang/greek/corpus/perseus/author/Dionysius/text/dh.002
+    http://localhost:5000/lang/greek/corpus/perseus/author/Dionysius/text/dh.hist01
 
 Dobson
+    ! broken: What is this? Remove from /authors ?
 
 Elegy
+    http://localhost:5000/lang/greek/corpus/perseus/author/elegy/text/1
 
 Epictetus
+    http://localhost:5000/lang/greek/corpus/perseus/author/epictetus/text/epictetus
 
 Euclid
+    http://localhost:5000/lang/greek/corpus/perseus/author/Euclid/text/euc.elem
 
 Euripides
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Euripides/text/eur.orest
+    empty list
 
 Galen
+    http://localhost:5000/lang/greek/corpus/perseus/author/Galen/text/gal.nat.fac
 
 Herodotus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Herodotus/text/hdt
 
 Hesiod
+    http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.sh
 
 Hippocrates
+    http://localhost:5000/lang/greek/corpus/perseus/author/Hippocrates/text/hp.jones
 
 Homer
+    http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.il
 
 Homeric_Hymns
+    http://localhost:5000/lang/greek/corpus/perseus/author/Homeric_Hymns/text/hh
 
 Hyperides
+    http://localhost:5000/lang/greek/corpus/perseus/author/Hyperides/text/hyp
 
 Isocrates
+    No Greek text, so rm from /authors
 
 JebbOrators
+    http://localhost:5000/lang/greek/corpus/perseus/author/JebbOrators/text/attic_orators
 
 Josephus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Josephus/text/j.bj
 
 Lucian
+    http://localhost:5000/lang/greek/corpus/perseus/author/Lucian/text/01
 
 Lucretius
+    !!! Why they hell is Lucretius under Greek???
+    !! This is something we'll have to fix while indexing; I'll leave him under Greek for now
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Lucretius/text/lucretius
+    empty list
 
 Lycophron
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Lycophron/text/lycophron_01
+    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
 
 Lycurgus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Lycurgus/text/lyc
 
 Lysias
+    http://localhost:5000/lang/greek/corpus/perseus/author/Lysias/text/lys
 
 Nonnos
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Nonnos/texts
+    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
 
 Oppian
+    http://localhost:5000/lang/greek/corpus/perseus/author/Oppian/texts
 
 Pausanias
+    http://localhost:5000/lang/greek/corpus/perseus/author/Pausanias/text/paus
 
 Phaedrus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Phaedrus/texts
 
 Pindar
+    http://localhost:5000/lang/greek/corpus/perseus/author/Pindar/text/pind
 
 Plato
+    http://localhost:5000/lang/greek/corpus/perseus/author/Plato/text/plat.l
 
 Plutarch
+    http://localhost:5000/lang/greek/corpus/perseus/author/Plutarch/text/plut.0094.002_teubner
+    http://localhost:5000/lang/greek/corpus/perseus/author/Plutarch/text/plut.082b_loeb
 
 Polybius
+    http://localhost:5000/lang/greek/corpus/perseus/author/Polybius/text/hist
 
 Sidonius
+    http://localhost:5000/lang/greek/corpus/perseus/author/Sidonius/texts
 
 Sophocles
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Sophocles/text/soph.aj
+    empty list
 
 Strabo
+    http://localhost:5000/lang/greek/corpus/perseus/author/Strabo/text/strab
 
 Theocritus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Theocritus/text/idylls
 
 Theophrastus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Theophrastus/text/char
 
 Thucydides
+    ! There are no Greek files for Thucydides! http://localhost:5000/lang/greek/corpus/perseus/author/Thucydides/texts
+    /Users/kyle/cltk_data/greek/text/greek_text_perseus/Thucydides/opensource/
 
 Tryphiodorus
+    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Tryphiodorus/texts
+    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
 
-Xenophon"
+Xenophon
+    http://localhost:5000/lang/greek/corpus/perseus/author/Xenophon/text/xen.anab

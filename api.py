@@ -32,7 +32,8 @@ class Authors(Resource):
         text_path = os.path.expanduser('~/cltk_data/' + lang + '/text/' + lang + '_text_' + corpus_name)
         dir_contents = os.listdir(text_path)
         # Sulpicia dir has no Latin texts
-        remove_files = ['README.md', '.git', 'LICENSE.md', 'perseus_compiler.py', '.DS_Store', 'Sulpicia']
+        # Isocrates dir has no Greek texts
+        remove_files = ['README.md', '.git', 'LICENSE.md', 'perseus_compiler.py', '.DS_Store', 'Sulpicia' , 'Isocrates']
         dir_contents = [f for f in dir_contents if f not in remove_files]
         return {'authors': sorted(dir_contents)}
 
@@ -45,6 +46,18 @@ class Texts(Resource):
         ending = ''
         if corpus_name == 'perseus' and lang == 'greek':
             ending = '_gk.xml.json'
+            if author_name.casefold() == 'aratus':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'jebborators':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'lucretius':
+                ending = '_lat.xml.json'
+            elif author_name.casefold() == 'lycophron':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'nonnos':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'tryphiodorus':
+                ending = '.xml.json'
         elif corpus_name == 'perseus' and lang == 'latin':
             ending = '_lat.xml.json'
             # weird exceptions
@@ -65,6 +78,18 @@ class Text(Resource):
         ending = ''
         if corpus_name == 'perseus' and lang == 'greek':
             ending = '_gk.xml.json'
+            if author_name.casefold() == 'aratus':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'jebborators':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'lucretius':
+                ending = '_lat.xml.json'
+            elif author_name.casefold() == 'lycophron':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'nonnos':
+                ending = '.xml.json'
+            elif author_name.casefold() == 'tryphiodorus':
+                ending = '.xml.json'
         elif corpus_name == 'perseus' and lang == 'latin':
             ending = '_lat.xml.json'
             # weird exceptions
@@ -138,7 +163,10 @@ class Text(Resource):
                         units.append(unit)
                     section_types = [units]
                 elif type(steps) is dict:
-                    print('dict')
+                    step = refs_decl['step']
+                    unit = step['@refunit']
+                    section_types.append([unit])
+
             # Some entries missing `{'@doctype': 'TEI.2'}` (eg, Pliny's `pliny.min.letters`)
             elif refs_decl.get('@doctype') != 'TEI.2' and 'state' in refs_decl:
                 states = refs_decl['state']
