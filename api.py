@@ -1,9 +1,11 @@
-"""Main API file for backend CLTK webapp."""
+"""Main API file for backend CLTK webapp.
+
+The Texts class parses files to get their metadata. This is super cludgy and needs to be redone somehow.
+"""
 
 import json
 import os
 # import pdb
-import sys
 
 from flask import Flask
 from flask import request  # for getting query string
