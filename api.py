@@ -213,7 +213,7 @@ class Text(Resource):
             return {'refs_decl': refs_decls,
                     'filepath': text_path,
                     'section_types': section_types,
-                    'text': file_json['TEI.2']['text']['body']
+                    'text': file_json['TEI.2']['text']
                     }
 
 

@@ -245,6 +245,7 @@ Herodotus
     http://localhost:5000/lang/greek/corpus/perseus/author/Herodotus/text/hdt
 
 Hesiod
+    !? /texts
     http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.sh
 
 Hippocrates
