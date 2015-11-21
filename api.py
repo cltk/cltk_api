@@ -209,27 +209,39 @@ class Text(Resource):
         q_section_4 = request.args.get('section_4')
         q_section_5 = request.args.get('section_5')
 
+
+        returned_text = []
+
         # Parse text according to query string
         section_1_list = file_json['TEI.2']['text']['body']['div1']
         for section_1 in section_1_list:
-            print('q_section_1', q_section_1)
-            print('q_section_2', q_section_2)
+            #print('q_section_1', q_section_1)
+            #print('q_section_2', q_section_2)
 
-            print('section_1.keys()', section_1.keys())
+
             section_1_type = section_1['@type']  # str
             section_1_number = section_1['@n']  # str
-            section_1_line = section_1['l']  # list
-            print('section_1_type', section_1_type)
-            print('section_1_number', section_1_number)
-            print(section_1_line[0])
+            #section_1_line = section_1['l']  # list
+            #print('section_1_type', section_1_type)
+            #print('section_1_number', section_1_number)
+            #print(section_1_line[0])
 
-            if
+            if section_1_number == q_section_1:
+                #print('section_1.keys()', section_1.keys())
+                section_1_list = section_1['l']  # list
+
+                for counter, section_2_item in enumerate(section_1_list):
+                    if type(section_2_item) is dict:
+                        section_2_item = section_2_item['#text']
+                    if counter + 1 == int(q_section_2):
+                        returned_text = section_2_item
+
 
 
         return {'refs_decl': refs_decls,
                 'filepath': text_path,
                 'section_types': section_types,
-                'text': section_1_list,
+                'text': returned_text,
                 }
 
 # http://localhost:5000/lang/greek/corpus/perseus/authors
@@ -240,6 +252,9 @@ api.add_resource(Texts, '/lang/<string:lang>/corpus/<string:corpus_name>/author/
 
 # http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a
 # http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od
+
+# http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a?section_1=1&section_2=1
+# http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od?section_1=1&section_2=1
 api.add_resource(Text,
                  '/lang/<string:lang>/corpus/<string:corpus_name>/author/<string:author_name>/text/<string:fname>')
 
