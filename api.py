@@ -77,6 +77,11 @@ class Texts(Resource):
 class Text(Resource):
     def get(self, lang, corpus_name, author_name, fname):
 
+        # parse query string
+        book = request.args.get('book')
+        line = request.args.get('line')
+        print('***', book, line)
+
         text_path = os.path.expanduser(
             '~/cltk_data/') + lang + '/text/' + lang + '_text_' + corpus_name + '/' + author_name + '/opensource/' + fname
         ending = ''
@@ -201,9 +206,6 @@ class Text(Resource):
                     unit = state['@unit']
                     section_types.append([unit])
 
-
-
-
         return {'refs_decl': refs_decls,
                 'filepath': text_path,
                 'section_types': section_types,
@@ -218,7 +220,8 @@ api.add_resource(Texts, '/lang/<string:lang>/corpus/<string:corpus_name>/author/
 # http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a
 # http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od
 api.add_resource(Text,
-                 '/lang/<string:lang>/corpus/<string:corpus_name>/author/<string:author_name>/text/<string:fname>')  # Luke is doing
+                 '/lang/<string:lang>/corpus/<string:corpus_name>/author/<string:author_name>/text/<string:fname>')
+
 
 # simple examples
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
