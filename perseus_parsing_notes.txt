@@ -1,134 +1,267 @@
-# Latin checked
+# Notes
+Some units are called 'card' (for sections in Seneca and line numbers in Vergil. Some rewriting will be required.
+
+# Checked Authors
 Metadata has been parsed from the following files (at least one text for each author)
 
-
-"Ammianus"
+## Latin
+Ammianus
     http://localhost:5000/lang/latin/corpus/perseus/author/Ammianus/text/amm
 
-"Apuleius"
+Apuleius
     http://localhost:5000/lang/latin/corpus/perseus/author/apuleius/text/apuleius.ap
 
-"Augustine"
+Augustine
     http://localhost:5000/lang/latin/corpus/perseus/author/Augustine/text/august.sellet
 
-"Bede"
+Bede
     http://localhost:5000/lang/latin/corpus/perseus/author/bede/text/bede.hega
 
-"Caesar"
+Caesar
     http://localhost:5000/lang/latin/corpus/perseus/author/caesar/text/caes.bg
 
-"Catullus"
+Catullus
     http://localhost:5000/lang/latin/corpus/perseus/author/Catullus/text/cat
 
-"Celsus"
+Celsus
     http://localhost:5000/lang/latin/corpus/perseus/author/celsus/text/cels_darem
 
-"Cicero"
+Cicero
     http://localhost:5000/lang/latin/corpus/perseus/author/cicero/text/cic.ac
     http://localhost:5000/lang/latin/corpus/perseus/author/cicero/text/cic.fam
 
-"Columella"
+Columella
     http://localhost:5000/lang/latin/corpus/perseus/author/columella/text/col.agr01
 
-"Curtius"
+Curtius
     http://localhost:5000/lang/latin/corpus/perseus/author/curtius/text/curtius.alex
 
-"Flaccus"
+Flaccus
     http://localhost:5000/lang/latin/corpus/perseus/author/flaccus/text/v.fl
 
-"Florus"
+Florus
     http://localhost:5000/lang/latin/corpus/perseus/author/florus/text/florus.epit
 
-"Gellius"
+Gellius
     http://localhost:5000/lang/latin/corpus/perseus/author/Gellius/text/gel
 
-"Glass"
+Glass
     http://localhost:5000/lang/latin/corpus/perseus/author/glass/text/washington.bio
 
-"HistAugust"
+HistAugust
     http://localhost:5000/lang/latin/corpus/perseus/author/HistAugust/text/sha01.1
 
-"Horace"
+Horace
     http://localhost:5000/lang/latin/corpus/perseus/author/horace/text/hor.ap
 
-"Jerome"
+Jerome
     http://localhost:5000/lang/latin/corpus/perseus/author/jerome/text/jerome.sellet
 
-"Juvenal"
+Juvenal
     http://localhost:5000/lang/latin/corpus/perseus/author/juvenal/text/juv
 
-"Livy"
+Livy
     http://localhost:5000/lang/latin/corpus/perseus/author/livy/text/livy.foster01-02
 
-"Lucan"
+Lucan
     http://localhost:5000/lang/latin/corpus/perseus/author/lucan/text/pharsalia
 
-"Martial"
+Martial
     http://localhost:5000/lang/latin/corpus/perseus/author/martial/text/martial
 
-"MinuciusFelix"
+MinuciusFelix
     http://localhost:5000/lang/latin/corpus/perseus/author/MinuciusFelix/text/minfel.octav
 
-"Nepos"
+Nepos
     http://localhost:5000/lang/latin/corpus/perseus/author/nepos/text/lives
 
-"Ovid"
+Ovid
     http://localhost:5000/lang/latin/corpus/perseus/author/ovid/text/ovid.am
 
-"Persius"
+Persius
     http://localhost:5000/lang/latin/corpus/perseus/author/persius/text/persius.sat
 
-"Petronius"
+Petronius
     http://localhost:5000/lang/latin/corpus/perseus/author/petronius/text/petr
 
-"Plautus"
+Plautus
     http://localhost:5000/lang/latin/corpus/perseus/author/Plautus/text/pl.aul
 
-"Pliny"
+Pliny
     http://localhost:5000/lang/latin/corpus/perseus/author/pliny/text/pliny.min.letters
 
-"Propertius"
+Propertius
     http://localhost:5000/lang/latin/corpus/perseus/author/propertius/text/prop
 
-"Prudentius"
+Prudentius
     http://localhost:5000/lang/latin/corpus/perseus/author/prudentius/text/prud.01praef
 
-"Quintilian"
+Quintilian
     http://localhost:5000/lang/latin/corpus/perseus/author/quintilian/text/quint.butler1-3
 
-"Quintus"
+Quintus
     http://localhost:5000/lang/latin/corpus/perseus/author/quintus/text/quintsmyrn_01
 
-"Sallust"
+Sallust
+    http://localhost:5000/lang/latin/corpus/perseus/author/sallust/text/sallust.catil
 
-"Seneca"
+Seneca
+    http://localhost:5000/lang/latin/corpus/perseus/author/seneca/text/sen.ag
 
-"Seneca1"
+Seneca1
+    http://localhost:5000/lang/latin/corpus/perseus/author/seneca1/text/seneca.contr
 
-"SiliusItalicus"
+SiliusItalicus
+    http://localhost:5000/lang/latin/corpus/perseus/author/SiliusItalicus/text/silius.punica
 
-"Statius"
+Statius
+    http://localhost:5000/lang/latin/corpus/perseus/author/statius/text/stat.achill
 
-"Suetonius"
+Suetonius
+    http://localhost:5000/lang/latin/corpus/perseus/author/suetonius/text/suet.caes
 
-"Sulpicia"
+Sulpicia
+    Note: Sulpicia has no Latin text file, so I remove it from /authors, however routing still available at
+    http://localhost:5000/lang/latin/corpus/perseus/author/Sulpicia/texts
 
-"Tacitus"
-
+Tacitus
     http://localhost:5000/lang/latin/corpus/perseus/author/Tacitus/text/tac.ann
 
-"Terence"
+Terence
+    http://localhost:5000/lang/latin/corpus/perseus/author/terence/text/ad
 
-"Tertullian"
+Tertullian
+    http://localhost:5000/lang/latin/corpus/perseus/author/tertullian/text/tert.apol
 
-"Tibullus"
+Tibullus
+    http://localhost:5000/lang/latin/corpus/perseus/author/tibullus/text/tibullus.el
 
-"Vergil"
-
+Vergil
     http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a
 
-"Vitruvius"
+Vitruvius
+    http://localhost:5000/lang/latin/corpus/perseus/author/vitruvius/text/vitruv
 
+## Greek
 
+Aeschines
 
+Aeschylus
 
+Andocides
+
+Anth
+
+Apollodorus
+
+Apollonius
+
+Appian
+
+Aratus
+
+Aretaeus
+
+Aristides
+
+Aristophanes
+
+Aristotle
+
+Arrian
+
+Athenaeus
+
+Bacchylides
+
+Bible
+
+Callimachus
+
+Colluthus
+
+Demades
+
+Demosthenes
+
+Dinarchus
+
+DioChrys
+
+Diodorus
+
+Diogenes
+
+Dionysius
+
+Dobson
+
+Elegy
+
+Epictetus
+
+Euclid
+
+Euripides
+
+Galen
+
+Herodotus
+
+Hesiod
+
+Hippocrates
+
+Homer
+
+Homeric_Hymns
+
+Hyperides
+
+Isocrates
+
+JebbOrators
+
+Josephus
+
+Lucian
+
+Lucretius
+
+Lycophron
+
+Lycurgus
+
+Lysias
+
+Nonnos
+
+Oppian
+
+Pausanias
+
+Phaedrus
+
+Pindar
+
+Plato
+
+Plutarch
+
+Polybius
+
+Sidonius
+
+Sophocles
+
+Strabo
+
+Theocritus
+
+Theophrastus
+
+Thucydides
+
+Tryphiodorus
+
+Xenophon"

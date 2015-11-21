@@ -31,7 +31,8 @@ class Authors(Resource):
         # assert lang in ['greek', 'latin']
         text_path = os.path.expanduser('~/cltk_data/' + lang + '/text/' + lang + '_text_' + corpus_name)
         dir_contents = os.listdir(text_path)
-        remove_files = ['README.md', '.git', 'LICENSE.md', 'perseus_compiler.py', '.DS_Store']
+        # Sulpicia dir has no Latin texts
+        remove_files = ['README.md', '.git', 'LICENSE.md', 'perseus_compiler.py', '.DS_Store', 'Sulpicia']
         dir_contents = [f for f in dir_contents if f not in remove_files]
         return {'authors': sorted(dir_contents)}
 
