@@ -45,6 +45,9 @@ class Texts(Resource):
             ending = '_gk.xml.json'
         elif corpus_name == 'perseus' and lang == 'latin':
             ending = '_lat.xml.json'
+            # weird exceptions
+            if author_name.casefold() == 'histaugust':
+                ending = '.xml.json'
         dir_contents = [f for f in dir_contents if f.endswith(ending)]
         dir_contents = [f.casefold() for f in dir_contents]  # this probably isn't nec
         return {'texts': sorted(dir_contents)}
@@ -60,6 +63,10 @@ class Text(Resource):
             ending = '_gk.xml.json'
         elif corpus_name == 'perseus' and lang == 'latin':
             ending = '_lat.xml.json'
+            # weird exceptions
+            if author_name.casefold() == 'histaugust':
+                ending = '.xml.json'
+
 
         text_path += ending
         with open(text_path, "r") as f:
@@ -94,7 +101,7 @@ class Text(Resource):
 
         elif type(refs_decls) is dict:
             refs_decl = refs_decls
-            if refs_decl['@doctype'] == 'TEI.2' and 'state' in refs_decl:
+            if refs_decl.get('@doctype') == 'TEI.2' and 'state' in refs_decl:
                 states = refs_decl['state']
                 if type(states) is list:
                     units = []
@@ -106,7 +113,7 @@ class Text(Resource):
                     state = refs_decl['state']
                     unit = state['@unit']
                     section_types.append([unit])
-            elif refs_decl['@doctype'] == 'TEI.2' and 'step' in refs_decl:
+            elif refs_decl.get('@doctype') == 'TEI.2' and 'step' in refs_decl:
                 steps = refs_decl['step']
                 if type(steps) is list:
                     units = []
@@ -116,6 +123,21 @@ class Text(Resource):
                     section_types = [units]
                 elif type(steps) is dict:
                     print('dict')
+            # Some entries missing `{'@doctype': 'TEI.2'}` (eg, Pliny's `pliny.min.letters`)
+            elif refs_decl.get('@doctype') != 'TEI.2' and 'state' in refs_decl:
+                states = refs_decl['state']
+                if type(states) is list:
+                    units = []
+                    for state in states:
+                        unit = state['@unit']
+                        units.append(unit)
+                    section_types = [units]
+                elif type(states) is dict:
+                    state = refs_decl['state']
+                    unit = state['@unit']
+                    section_types.append([unit])
+
+
 
 
         return {'refs_decl': refs_decls,
