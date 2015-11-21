@@ -58,6 +58,8 @@ class Texts(Resource):
                 ending = '.xml.json'
             elif author_name.casefold() == 'tryphiodorus':
                 ending = '.xml.json'
+            elif author_name.casefold() == 'callimachus':
+                ending = '.xml.json'
         elif corpus_name == 'perseus' and lang == 'latin':
             ending = '_lat.xml.json'
             # weird exceptions
@@ -90,6 +92,9 @@ class Text(Resource):
                 ending = '.xml.json'
             elif author_name.casefold() == 'tryphiodorus':
                 ending = '.xml.json'
+            elif author_name.casefold() == 'callimachus':
+                if fname.startswith('call_0'):
+                    ending = '.xml.json'
         elif corpus_name == 'perseus' and lang == 'latin':
             ending = '_lat.xml.json'
             # weird exceptions
@@ -101,8 +106,8 @@ class Text(Resource):
             file_string = f.read()
         file_json = json.loads(file_string)
 
-        # Quintus files screwed up
-        if author_name.casefold() == 'quintus':
+        # Some files are odd
+        if author_name.casefold() in ['quintus', 'aratus', 'callimachus', 'colluthus', 'lycophron', 'nonnos', 'tryphiodorus']:
             encoding_desc = file_json['TEI.2']['teiHeader']['encodingDesc']
             if type(encoding_desc) is list:
                 for desc in encoding_desc:
@@ -155,6 +160,19 @@ class Text(Resource):
                     unit = state['@unit']
                     section_types.append([unit])
             elif refs_decl.get('@doctype') == 'TEI.2' and 'step' in refs_decl:
+                steps = refs_decl['step']
+                if type(steps) is list:
+                    units = []
+                    for state in steps:
+                        unit = state['@refunit']
+                        units.append(unit)
+                    section_types = [units]
+                elif type(steps) is dict:
+                    step = refs_decl['step']
+                    unit = step['@refunit']
+                    section_types.append([unit])
+            elif refs_decl.get('@doctype') != 'TEI.2' and 'step' in refs_decl:
+                print('*' * 40)
                 steps = refs_decl['step']
                 if type(steps) is list:
                     units = []

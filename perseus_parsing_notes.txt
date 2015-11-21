@@ -166,8 +166,7 @@ Appian
     http://localhost:5000/lang/greek/corpus/perseus/author/appian/text/appian.cw
 
 Aratus
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/aratus/text/aratus_01
-    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+    http://localhost:5000/lang/greek/corpus/perseus/author/aratus/text/aratus_01
 
 Aretaeus
     http://localhost:5000/lang/greek/corpus/perseus/author/Aretaeus/text/aret
@@ -195,12 +194,12 @@ Bible
     http://localhost:5000/lang/greek/corpus/perseus/author/Bible/text/nt
 
 Callimachus
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Callimachus/texts
-    empty list
+    http://localhost:5000/lang/greek/corpus/perseus/author/Callimachus/text/callimachus
+    http://localhost:5000/lang/greek/corpus/perseus/author/Callimachus/text/call_02
+
 
 Colluthus
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Colluthus/text/colluthus.01
-    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+    http://localhost:5000/lang/greek/corpus/perseus/author/Colluthus/text/colluthus.01
 
 Demades
     http://localhost:5000/lang/greek/corpus/perseus/author/Demades/text/demad
@@ -237,8 +236,7 @@ Euclid
     http://localhost:5000/lang/greek/corpus/perseus/author/Euclid/text/euc.elem
 
 Euripides
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Euripides/text/eur.orest
-    empty list
+    http://localhost:5000/lang/greek/corpus/perseus/author/Euripides/text/eur.orest
 
 Galen
     http://localhost:5000/lang/greek/corpus/perseus/author/Galen/text/gal.nat.fac
@@ -274,14 +272,12 @@ Lucian
     http://localhost:5000/lang/greek/corpus/perseus/author/Lucian/text/01
 
 Lucretius
-    !!! Why they hell is Lucretius under Greek???
+    !! Why they hell is Lucretius under Greek???
     !! This is something we'll have to fix while indexing; I'll leave him under Greek for now
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Lucretius/text/lucretius
-    empty list
+    http://localhost:5000/lang/greek/corpus/perseus/author/Lucretius/text/lucretius
 
 Lycophron
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Lycophron/text/lycophron_01
-    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+    http://localhost:5000/lang/greek/corpus/perseus/author/Lycophron/text/lycophron_01
 
 Lycurgus
     http://localhost:5000/lang/greek/corpus/perseus/author/Lycurgus/text/lyc
@@ -290,8 +286,7 @@ Lysias
     http://localhost:5000/lang/greek/corpus/perseus/author/Lysias/text/lys
 
 Nonnos
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Nonnos/texts
-    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+    http://localhost:5000/lang/greek/corpus/perseus/author/Nonnos/text/nonnos_01
 
 Oppian
     http://localhost:5000/lang/greek/corpus/perseus/author/Oppian/texts
@@ -319,8 +314,7 @@ Sidonius
     http://localhost:5000/lang/greek/corpus/perseus/author/Sidonius/texts
 
 Sophocles
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Sophocles/text/soph.aj
-    empty list
+    http://localhost:5000/lang/greek/corpus/perseus/author/Sophocles/text/soph.aj
 
 Strabo
     http://localhost:5000/lang/greek/corpus/perseus/author/Strabo/text/strab
@@ -332,12 +326,11 @@ Theophrastus
     http://localhost:5000/lang/greek/corpus/perseus/author/Theophrastus/text/char
 
 Thucydides
-    ! There are no Greek files for Thucydides! http://localhost:5000/lang/greek/corpus/perseus/author/Thucydides/texts
+    ! There are no Greek files for Thucydides: http://localhost:5000/lang/greek/corpus/perseus/author/Thucydides/texts
     /Users/kyle/cltk_data/greek/text/greek_text_perseus/Thucydides/opensource/
 
 Tryphiodorus
-    ! broken: http://localhost:5000/lang/greek/corpus/perseus/author/Tryphiodorus/texts
-    refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+    http://localhost:5000/lang/greek/corpus/perseus/author/Tryphiodorus/text/tryphiodorus_01
 
 Xenophon
     http://localhost:5000/lang/greek/corpus/perseus/author/Xenophon/text/xen.anab
