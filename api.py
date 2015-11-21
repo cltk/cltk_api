@@ -3,6 +3,7 @@
 import json
 import os
 # import pdb
+import sys
 
 from flask import Flask
 from flask import request  # for getting query string
@@ -48,6 +49,8 @@ class Texts(Resource):
             # weird exceptions
             if author_name.casefold() == 'histaugust':
                 ending = '.xml.json'
+            elif author_name.casefold() == 'quintus':
+                ending = '.xml.json'
         dir_contents = [f for f in dir_contents if f.endswith(ending)]
         dir_contents = [f.casefold() for f in dir_contents]  # this probably isn't nec
         return {'texts': sorted(dir_contents)}
@@ -64,17 +67,29 @@ class Text(Resource):
         elif corpus_name == 'perseus' and lang == 'latin':
             ending = '_lat.xml.json'
             # weird exceptions
-            if author_name.casefold() == 'histaugust':
+            if author_name.casefold() == 'histaugust' or author_name.casefold() == 'quintus':
                 ending = '.xml.json'
 
-
         text_path += ending
-        with open(text_path, "r") as f:
+        with open(text_path, "r") as f:  # TODO: use json.loads() for all this
             file_string = f.read()
-
         file_json = json.loads(file_string)
 
-        refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+        # Quintus files screwed up
+        if author_name.casefold() == 'quintus':
+            encoding_desc = file_json['TEI.2']['teiHeader']['encodingDesc']
+            if type(encoding_desc) is list:
+                for desc in encoding_desc:
+                    try:
+                        quintus = True
+                        refs_decls = desc.get('refsDecl')
+                        break
+                    except Exception:
+                        pass
+        # everyone else
+        else:
+            refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+
         section_types = []  # list of lists
         if type(refs_decls) is list:
             for refs_decl in refs_decls:

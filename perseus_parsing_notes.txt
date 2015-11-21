@@ -88,12 +88,16 @@ Metadata has been parsed from the following files (at least one text for each au
     http://localhost:5000/lang/latin/corpus/perseus/author/pliny/text/pliny.min.letters
 
 "Propertius"
+    http://localhost:5000/lang/latin/corpus/perseus/author/propertius/text/prop
 
 "Prudentius"
+    http://localhost:5000/lang/latin/corpus/perseus/author/prudentius/text/prud.01praef
 
 "Quintilian"
+    http://localhost:5000/lang/latin/corpus/perseus/author/quintilian/text/quint.butler1-3
 
 "Quintus"
+    http://localhost:5000/lang/latin/corpus/perseus/author/quintus/text/quintsmyrn_01
 
 "Sallust"
 
