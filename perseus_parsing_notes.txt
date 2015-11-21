@@ -1,0 +1,119 @@
+# Latin checked
+Metadata has been parsed from the following files (at least one text for each author)
+
+
+"Ammianus"
+    http://localhost:5000/lang/latin/corpus/perseus/author/Ammianus/text/amm
+
+"Apuleius"
+    http://localhost:5000/lang/latin/corpus/perseus/author/apuleius/text/apuleius.ap
+
+"Augustine"
+    http://localhost:5000/lang/latin/corpus/perseus/author/Augustine/text/august.sellet
+
+"Bede"
+    http://localhost:5000/lang/latin/corpus/perseus/author/bede/text/bede.hega
+
+"Caesar"
+    http://localhost:5000/lang/latin/corpus/perseus/author/caesar/text/caes.bg
+
+"Catullus"
+    http://localhost:5000/lang/latin/corpus/perseus/author/Catullus/text/cat
+
+"Celsus"
+    http://localhost:5000/lang/latin/corpus/perseus/author/celsus/text/cels_darem
+
+"Cicero"
+    http://localhost:5000/lang/latin/corpus/perseus/author/cicero/text/cic.ac
+    http://localhost:5000/lang/latin/corpus/perseus/author/cicero/text/cic.fam
+
+"Columella"
+    http://localhost:5000/lang/latin/corpus/perseus/author/columella/text/col.agr01
+
+"Curtius"
+    http://localhost:5000/lang/latin/corpus/perseus/author/curtius/text/curtius.alex
+
+"Flaccus"
+    http://localhost:5000/lang/latin/corpus/perseus/author/flaccus/text/v.fl
+
+"Florus"
+    http://localhost:5000/lang/latin/corpus/perseus/author/florus/text/florus.epit
+
+"Gellius"
+    http://localhost:5000/lang/latin/corpus/perseus/author/Gellius/text/gel
+
+"Glass"
+    http://localhost:5000/lang/latin/corpus/perseus/author/glass/text/washington.bio
+
+"HistAugust"
+
+
+"Horace"
+
+"Jerome"
+
+"Juvenal"
+
+"Livy"
+
+"Lucan"
+
+"Martial"
+
+"MinuciusFelix"
+
+"Nepos"
+
+"Ovid"
+
+"Persius"
+
+"Petronius"
+
+"Plautus"
+
+    http://localhost:5000/lang/latin/corpus/perseus/author/Plautus/text/pl.aul
+
+"Pliny"
+
+"Propertius"
+
+"Prudentius"
+
+"Quintilian"
+
+"Quintus"
+
+"Sallust"
+
+"Seneca"
+
+"Seneca1"
+
+"SiliusItalicus"
+
+"Statius"
+
+"Suetonius"
+
+"Sulpicia"
+
+"Tacitus"
+
+    http://localhost:5000/lang/latin/corpus/perseus/author/Tacitus/text/tac.ann
+
+"Terence"
+
+"Tertullian"
+
+"Tibullus"
+
+"Vergil"
+
+    http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a
+
+"Vitruvius"
+
+
+
+
