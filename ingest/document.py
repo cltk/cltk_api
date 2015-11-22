@@ -26,7 +26,7 @@ class Document:
         self.path_params = fname_full.split("/")
 
         # Set the type of file
-        self.file_extension = os.path.splitext( fname_full )
+        self.file_extension = os.path.splitext( fname_full )[-1]
 
         # Load the encodings
         self.encodings = self._all_encodings()
@@ -50,8 +50,7 @@ class Document:
 
         # If is a parseable document, parse docroot
         self.soup = None
-        if self.file_extension in ['xml', 'html']:
-            print( " -- parsing content", self.fname_full )
+        if self.file_extension in ['.xml', '.html']:
             self.soup = BeautifulSoup( self.text_content )
 
 

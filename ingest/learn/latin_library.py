@@ -105,7 +105,7 @@ def learn_latin_library( document ):
                         'n' : text_n,
                         'subwork' :  subwork,
                         'subwork_n' :  subwork_n,
-                        'html' : text_line,
+                        'html' : "",
                         'text' : text_line
                     })
                 text_n += 1

@@ -7,17 +7,23 @@ Download corpora and ingest them into a Mongo database
 
 
 import celery
-import os, sys
+import os, sys, pdb
 from git.exc import GitCommandError
 from cltk.corpus.utils.importer import CorpusImporter
 from ingest.document import Document
 from ingest.learn.lacus_curtius import learn_lacus_curtius
 from ingest.learn.latin_library import learn_latin_library
+from ingest.learn.coptic_text import learn_coptic_text
 from ingest.learn.perseus import learn_perseus
 from util.db import mongo
 
+# The corpora to ensure are downloaded
 CORPUS_IMPORTER_CORPORA = ['chinese', 'coptic', 'greek', 'latin', 'multilingual', 'pali', 'tibetan']
 
+# The corpora that have strategies to parse/ingest
+# latin_text_latin_library is currently deprioritized for later iterations
+# of the project
+CORPORA_TO_INGEST = [ "coptic_text_scriptorium" ]
 
 class IngestCorpora:
 
@@ -53,7 +59,7 @@ class IngestCorpora:
             corpus_importer = CorpusImporter( corpus_importer_slug )
             for corpus in corpus_importer.list_corpora:
                 try:
-                    print(" -- Downloading:", corpus)
+                    print(" -- Attempting download:", corpus)
 
                     corpus_importer.import_corpus( corpus )
 
@@ -83,7 +89,7 @@ class IngestCorpora:
                     "git" not in root
                 and len(path_params) > 6
                 and path_params[5] == "text"
-                and path_params[6] == "latin_text_latin_library"
+                and path_params[6] in CORPORA_TO_INGEST
                 ):
 
                 for fname in files:
@@ -129,8 +135,23 @@ class IngestCorpora:
         elif path_params[6] == "latin_text_lacus_curtius":
             document = learn_lacus_curtius( document )
 
-        elif path_params[6] == "latin_text_latin_library":
+        elif path_params[6] == "latin_text_perseus":
             document = learn_perseus( document )
+
+        elif path_params[6] == "coptic_text_scriptorium":
+            if ( len( path_params ) > 9
+                and path_params[8].endswith("TEI")
+                and path_params[9].endswith("xml")
+                ):
+                document = learn_coptic_text( document )
+            else:
+                # Don't ingest PAULA, relANNIS, or XML
+                print( " -- omitting document of wrong filetype")
+                return
+
+
+        else:
+            print(" -- No strategy to learn about", fname_full)
 
         # Save document metadata and text to database
         document.save()
