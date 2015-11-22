@@ -1,3 +1,8 @@
+import re
+import string
+from util.numerals import fromRoman, InvalidRomanNumeralError
+from util.util import strip_punctution
+
 def learn_latin_library( document ):
 
     # Set metadata already known about document
@@ -118,16 +123,16 @@ def learn_latin_library( document ):
     if len(document.work) == 0:
 
         if len(document.path_params) == 8:
-            document.work = path_params[7].split('.')[0].title()
+            document.work = document.path_params[7].split('.')[0].title()
 
-        elif len(path_params) == 9:
-            document.work = path_params[8].split('.')[0].title()
+        elif len(document.path_params) == 9:
+            document.work = document.path_params[8].split('.')[0].title()
 
             if len(document.author) == 0:
-                document.author = path_params[7].split('.')[0].title()
+                document.author = document.path_params[7].split('.')[0].title()
 
         else:
 
             print(" -- Error inferring document metada from fullpath:", document.fname_full)
 
-    return
+    return document

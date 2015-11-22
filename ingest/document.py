@@ -1,16 +1,29 @@
+"""
+
+A document to ingest, coressponding always to a single file residing
+in ~/cltk_data
+
+"""
+
+
 import pdb
 import os
 import pkgutil
 import encodings
+from bs4 import BeautifulSoup
+from slugify import slugify
+from util.db import mongo
 
 
 class Document:
+    """A single document, to be learned about and saved to the database"""
 
 
     def __init__( self, fname_full ):
 
         # Full path including filename
         self.fname_full = fname_full
+        self.path_params = fname_full.split("/")
 
         # Set the type of file
         self.file_extension = os.path.splitext( fname_full )
@@ -18,7 +31,7 @@ class Document:
         # Load the encodings
         self.encodings = self._all_encodings()
 
-        # Document metadata
+        # self metadata
         self.title = ""
         self.author = ""
         self.genre = ""
@@ -45,6 +58,10 @@ class Document:
         return
 
     def _all_encodings(self):
+        """
+        Util method that returns all types of file encodings to try to open a
+        given document with
+        """
         modnames = set([modname for importer, modname, ispkg in pkgutil.walk_packages(
                         path=[os.path.dirname(encodings.__file__)], prefix='')])
         aliases = set(encodings.aliases.aliases.values())
@@ -53,6 +70,7 @@ class Document:
 
 
     def _read_file(self):
+        """Open and read a the contents of a file"""
 
         text_content = ""
 
@@ -90,104 +108,144 @@ class Document:
             return 0
 
 
-    def learn( self ):
-        """
-        Apply a strategy to infer metadata about this document
-        """
-
-        if self.path_params[6] == "latin_text_latin_library":
-            learn_latin_library()
-
-        elif self.path_params[6] == "latin_text_lacus_curtius":
-            learn_lacus_curtius()
-
-        elif self.path_params[6] == "latin_text_latin_library":
-            learn_perseus()
-
-
-
-        return
-
-
     def save( self ):
         """
         Save document text units and metadata to database
         """
 
-        ingest_document = mongo.db.ingest_documents.insert({
-            'fname_full' : document.fname_full
+        db = mongo( "cltk_api" )
+
+        ingest_document_id = db.ingest_documents.insert({
+            'fname_full' : self.fname_full
         })
 
         # Corpus
         corpus = {
-                'slug' : document.corpus_slug,
-                'title' : document.corpus_slug.title()
+                'slug' : slugify( self.corpus_slug ),
+                'title' : self.corpus_slug.title()
             }
+        corpus_id = db.corpora.update({
+                                        'slug' : corpus['slug']
+                                    },
+                                    corpus,
+                                    upsert=True )
 
         # Author
         author = {
-                'slug' : document.author,
-                'name_english' : document.author,
-                'name_original' : document.author
+                'slug' : slugify( self.author ),
+                'name_english' : self.author,
+                'name_original' : self.author
             }
-
+        author_id = db.authors.update({
+                                        'slug' : author['slug']
+                                    },
+                                    author,
+                                    upsert=True )
         # Repository
         repository = {
-                'slug' : slugify( document.repository ),
-                'title' : document.repository
+                'slug' : slugify( self.repository ),
+                'title' : self.repository
 
             }
+        repository_id = db.repositories.update({
+                                        'slug' : repository['slug']
+                                    },
+                                    repository,
+                                    upsert=True )
 
 
         # Work
         work = {
-                'title' : document.work[0:199],
-                'slug' : slugify( document.work[0:199] ),
-                'corpus' : document.corpus_slug,
+                'title' : self.work[0:199],
+                'slug' : slugify( self.work[0:199] ),
+                'corpus' : corpus['slug'],
                 'authors' : [{
-                    'slug' document.author
-                }]
-                'ingest_document' : document.fname_full
-
+                    'slug' : author['slug']
+                }],
+                'ingest_documents' : [self.fname_full]
             }
+
+        existing_work = db.works.find_one({ 'slug' : work['slug'] })
+        if existing_work:
+
+            # Check if the author is already listed in the existing work authors
+            existing_work_has_current_author = False
+            for existing_work_author in existing_work['authors']:
+                if author['slug'] == existing_work_author['slug']:
+                    existing_work_has_current_author = True
+
+            # If the author is already in the existing work authors, don't add it
+            if existing_work_has_current_author:
+
+                db.works.update({
+                        'slug' : work['slug']
+                    }, {
+                        '$addToSet' : {
+                                'ingest_documents' : self.fname_full
+                            }
+                        })
+
+            # Otherwise, if the author isn't listed, add it to the authors set
+            else:
+                db.works.update({
+                        'slug' : work['slug']
+                    }, {
+                        '$addToSet' : {
+                                'authors' : {
+                                    'slug' : author['slug']
+                                },
+                                'ingest_documents' : self.fname_full
+                            }
+                        })
+
+            work_id = existing_work['_id']
+
+        else:
+            work_id = db.works.insert(work)
+
 
         # Genre
         genre = {
-                'title' : document.genre.title(),
-                'slug' : document.genre
+                'title' : self.genre.title(),
+                'slug' : slugify( self.genre )
 
             }
+        genre_id = db.genres.update({
+                                        'slug' : work['slug']
+                                    },
+                                    genre,
+                                    upsert=True )
 
         # Edition
         edition = {
-                'title' : document.edition_title,
-                'slug' : slugify( document.edition_title ),
-                'repository' : slugify( document.repository )
+                'title' : self.edition_title,
+                'slug' : slugify( self.edition_title ),
+                'repository' : slugify( self.repository )
 
             }
+        edition_id = db.editions.update({
+                                        'slug' : edition['slug']
+                                    },
+                                    edition,
+                                    upsert=True )
 
         # Text units
-        for text_unit in document.text_units:
+        for text_unit in self.text_units:
 
-            text = {
-                'work' : slugify( document.work[0:199] ),
-                'subwork' : {
-                    'slug' : text_unit['subwork']
-                    'n' : text_unit['subwork_n']
-                },
-                'genre' : document.genre,
-                'n' : text_unit['n'],
-                'text' : text_unit['text'],
-                'html' : text_unit['html']
+            text_id = db.text.insert({
+                    'work' : slugify( self.work[0:199] ),
+                    'subwork' : {
+                        'slug' : text_unit['subwork'],
+                        'n' : text_unit['subwork_n']
+                    },
+                    'genre' : self.genre,
+                    'n' : text_unit['n'],
+                    'text' : text_unit['text'],
+                    'html' : text_unit['html']
 
-            }
+                })
 
 
-        """
-
-        Save things
-
-        """
 
 
         return

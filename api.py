@@ -12,6 +12,7 @@ from flask import request  # for getting query string
 # eg: request.args.get('user') will get '?user=some-value'
 from flask_restful import Resource, Api
 from flask.ext.pymongo import PyMongo
+from ingest.resources import Ingest
 
 app = Flask(__name__)
 mongo = PyMongo(app)
@@ -286,6 +287,9 @@ api.add_resource(Text,
 # simple examples
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
 api.add_resource(HelloWorld, '/hello')
+
+# Trigger new document ingest
+api.add_resource(Ingest, '/ingest')
 
 if __name__ == '__main__':
     app.run(debug=True)

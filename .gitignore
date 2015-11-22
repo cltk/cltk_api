@@ -1,6 +1,7 @@
 .idea
 *\~
 venv
+*.sw[po]
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

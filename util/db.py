@@ -20,6 +20,6 @@ def mongo(db, host="localhost", port=27017):
 
 
 	"""
-	client = pymongo.MongoClient(host, port, max_pool_size=None)
+	client = pymongo.MongoClient( host, port )
 
 	return client[db]
