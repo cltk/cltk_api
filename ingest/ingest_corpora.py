@@ -36,7 +36,7 @@ class IngestCorpora:
         self.reset_document_data()
 
         # First download all the corpora
-        # self.import_corpora()
+        self.import_corpora()
 
         # Now we need to ingest text from the downloaded corpora text dirs
         self.ingest_documents()
