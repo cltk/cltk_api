@@ -1,7 +1,5 @@
-.idea
 *\~
 venv
-*.sw[po]
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -60,3 +58,39 @@ docs/_build/
 
 # PyBuilder
 target/
+
+#########################
+# Emacs temporary files #
+#########################
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+#################
+# Other Editors #
+#################
+*.sw[po]
+.idea/
+*.iml
+*.iws
+
+##########################
+# Temporary backup files #
+##########################
+Backup of*.docx
+
+######################
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
