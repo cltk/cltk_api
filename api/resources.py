@@ -5,8 +5,11 @@ import json
 from flask import abort, request
 from flask_restful import Resource, Api
 from util.db import mongo
+from util.jsonp import jsonp
 
 class Query(Resource):
+
+    @jsonp
     def get( self ):
 
 
@@ -33,9 +36,11 @@ class Query(Resource):
             # Default limit is 30
             request_limit = 30
 
+        #
+        # Very basic query just for testing!
+        # Need to sanitize input query params!
+        #
+        data = [x for x in db[ request_collection ].find( params )]
 
-        pdb.set_trace()
 
-
-
-        return request.args
+        return data

@@ -4,8 +4,6 @@ The Texts class parses files to get their metadata. This is super cludgy and nee
 """
 
 import os
-# import pdb
-
 from flask import Flask
 from flask import request  # for getting query string
 from flask import json, jsonify
@@ -20,16 +18,6 @@ app = Flask(__name__)
 mongo = PyMongo(app)
 api = Api(app)
 
-# example
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
-
-
-# example
-class TodoSimple(Resource):
-    def get(self, todo_id):
-        return {'example with token': todo_id}
 
 class Authors(Resource):
 
@@ -45,11 +33,13 @@ class Authors(Resource):
         remove_files = ['README.md', '.git', 'LICENSE.md', 'perseus_compiler.py', '.DS_Store', 'Sulpicia' , 'Isocrates']
 
         dir_contents = [f for f in dir_contents if f not in remove_files]
-        
+
         return {'authors': sorted(dir_contents) }
 
 
 class Texts(Resource):
+
+    @jsonp
     def get(self, lang, corpus_name, author_name):
         text_path = os.path.expanduser(
             '~/cltk_data/' + lang + '/text/' + lang + '_text_' + corpus_name + '/' + author_name.casefold() + '/opensource')  # casefold() prob not nec
@@ -84,6 +74,8 @@ class Texts(Resource):
 
 
 class Text(Resource):
+
+    @jsonp
     def get(self, lang, corpus_name, author_name, fname):
 
         text_path = os.path.expanduser(
@@ -288,11 +280,6 @@ api.add_resource(Texts, '/lang/<string:lang>/corpus/<string:corpus_name>/author/
 # http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od?section_1=1&section_2=1
 api.add_resource(Text,
                  '/lang/<string:lang>/corpus/<string:corpus_name>/author/<string:author_name>/text/<string:fname>')
-
-
-# simple examples
-api.add_resource(TodoSimple, '/todo/<string:todo_id>')
-api.add_resource(HelloWorld, '/hello')
 
 # Trigger new document ingest
 api.add_resource(Ingest, '/ingest')
