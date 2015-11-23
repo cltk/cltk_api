@@ -3,21 +3,22 @@
 The Texts class parses files to get their metadata. This is super cludgy and needs to be redone somehow.
 """
 
-import json
 import os
 # import pdb
 
 from flask import Flask
 from flask import request  # for getting query string
+from flask import json, jsonify
 # eg: request.args.get('user') will get '?user=some-value'
 from flask_restful import Resource, Api
 from flask.ext.pymongo import PyMongo
 from ingest.resources import Ingest
+from api.resources import Query
+from util.jsonp import jsonp
 
 app = Flask(__name__)
 mongo = PyMongo(app)
 api = Api(app)
-
 
 # example
 class HelloWorld(Resource):
@@ -30,17 +31,22 @@ class TodoSimple(Resource):
     def get(self, todo_id):
         return {'example with token': todo_id}
 
-
 class Authors(Resource):
+
+    @jsonp
     def get(self, lang, corpus_name):
         # assert lang in ['greek', 'latin']
         text_path = os.path.expanduser('~/cltk_data/' + lang + '/text/' + lang + '_text_' + corpus_name)
+
         dir_contents = os.listdir(text_path)
+
         # Sulpicia dir has no Latin texts
         # Isocrates dir has no Greek texts
         remove_files = ['README.md', '.git', 'LICENSE.md', 'perseus_compiler.py', '.DS_Store', 'Sulpicia' , 'Isocrates']
+
         dir_contents = [f for f in dir_contents if f not in remove_files]
-        return {'authors': sorted(dir_contents)}
+        
+        return {'authors': sorted(dir_contents) }
 
 
 class Texts(Resource):
@@ -74,7 +80,7 @@ class Texts(Resource):
                 ending = '.xml.json'
         dir_contents = [f for f in dir_contents if f.endswith(ending)]
         dir_contents = [f.casefold() for f in dir_contents]  # this probably isn't nec
-        return {'texts': sorted(dir_contents)}
+        return json.dumps( {'texts': sorted(dir_contents)} )
 
 
 class Text(Resource):
@@ -290,6 +296,9 @@ api.add_resource(HelloWorld, '/hello')
 
 # Trigger new document ingest
 api.add_resource(Ingest, '/ingest')
+
+# Feed GET params to query to DB
+api.add_resource(Query, '/query')
 
 if __name__ == '__main__':
     app.run(debug=True)
