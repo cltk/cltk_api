@@ -77,6 +77,7 @@ Nepos
 
 Ovid
     http://localhost:5000/lang/latin/corpus/perseus/author/ovid/text/ovid.am
+    http://localhost:5000/lang/latin/corpus/perseus/author/ovid/text/ovid.met?section_1=1
 
 Persius
     http://localhost:5000/lang/latin/corpus/perseus/author/persius/text/persius.sat
@@ -245,8 +246,10 @@ Herodotus
     http://localhost:5000/lang/greek/corpus/perseus/author/Herodotus/text/hdt
 
 Hesiod
-    !? /texts
     http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.sh
+    http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.th
+    http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.wd
+    http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.wd?section_1=1
 
 Hippocrates
     http://localhost:5000/lang/greek/corpus/perseus/author/Hippocrates/text/hp.jones

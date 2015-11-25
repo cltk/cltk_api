@@ -23,11 +23,13 @@ def dict_to_file(obj, fp):
 
 def book_line_convert(fp):
     """Take filepath, try to make new file.
-    new_object{'meta': ['book', 'line'],
-      'text': [
-        {'book': 1,
-         'line': ['aaaaa', 'bbbbb', 'cccc']}
-    ]}
+    {'author': 'Vergil',
+     'text': [
+       {'book': 1,
+        'line': ['aaaaa', 'bbbbb', 'cccc']
+        }
+     ]
+    }
     """
     final_file_dict = {}
     text_books_list = []
@@ -36,6 +38,22 @@ def book_line_convert(fp):
     tei = file_dict['TEI.2']  # dict
     text = tei['text']  # dict
     header = tei['teiHeader']  # dict
+
+    # Get work's title, add to final dict
+    title_list = header['fileDesc']['titleStmt']['title']
+    for obj in title_list:
+        if type(obj) is str:
+            title_name = obj
+            final_file_dict['title'] = title_name
+            break
+        try:
+            if obj['@type'] == 'work':
+                title_name = obj['#text']
+                final_file_dict['title'] = title_name
+                break
+        except KeyError:
+            raise
+
     encoding = header['encodingDesc']  # dict
     body = text['body']  # dict
     div1 = body['div1']  # list of dict

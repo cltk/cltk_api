@@ -26,6 +26,22 @@ def book_chapter_convert(fp):
     tei = file_dict['TEI.2']  # dict
     text = tei['text']  # dict
     header = tei['teiHeader']  # dict
+
+    # Get work's title, add to final dict
+    title_list = header['fileDesc']['titleStmt']['title']
+    for obj in title_list:
+        if type(obj) is str:
+            title_name = obj
+            final_file_dict['title'] = title_name
+            break
+        try:
+            if obj['@type'] == 'work':
+                title_name = obj['#text']
+                final_file_dict['title'] = title_name
+                break
+        except KeyError:
+            raise
+
     encoding = header['encodingDesc']  # dict
     body = text['body']  # dict
     div1 = body['div1']  # list of dict
@@ -147,5 +163,5 @@ def book_chapter_convert(fp):
 
 if __name__ == "__main__":
     fp = '/Users/kyle/cltk_data/latin/text/latin_text_perseus/Ammianus/opensource/amm_lat.xml.json'
-    book_line_convert(fp)
+    book_chapter_convert(fp)
 

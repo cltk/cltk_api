@@ -209,6 +209,7 @@ class Text(Resource):
         q_section_4 = request.args.get('section_4')
         q_section_5 = request.args.get('section_5')
 
+        # If no query string, return text object
         if not q_section_1:
             return {'refs_decl': refs_decls,
                     'filepath': text_path,
@@ -216,55 +217,76 @@ class Text(Resource):
                     'text': file_json['TEI.2']['text']
                     }
 
-
         # Parse text according to query string
-        section_1_list = file_json['TEI.2']['text']['body']['div1']
-        for section_1 in section_1_list:
-            #print('q_section_1', q_section_1)
-            #print('q_section_2', q_section_2)
+        section_1_object = file_json['TEI.2']['text']['body']['div1']
 
+        if type(section_1_object) is list:
+            for section_1 in section_1_object:
+                try:
+                    section_1_number = section_1['@n']  # str
+                except KeyError:
+                    # http://localhost:5000/lang/greek/corpus/perseus/author/Aeschylus/text/aesch.ag?section_1=1
+                    # Something funny. Redefine section_1 to s.th. deeper embedded
+                    #! This pathway is broke and I don't know if I want to make this more convoluted than it is. Dammit.
+                    section_1 = section_1['div2']['sp']
 
-            section_1_type = section_1['@type']  # str
-            section_1_number = section_1['@n']  # str
-            #section_1_line = section_1['l']  # list
-            #print('section_1_type', section_1_type)
-            #print('section_1_number', section_1_number)
-            #print(section_1_line[0])
+                if section_1_number == q_section_1:
+                    section_1_object = section_1['l']  # list
 
-            if section_1_number == q_section_1:
-                #print('section_1.keys()', section_1.keys())
-                section_1_list = section_1['l']  # list
+                    # cleanup lines
+                    return_section_1_object = []
+                    for line in section_1_object:
+                        if type(line) is dict:
+                            line = line['#text']
+                        return_section_1_object.append(line)
 
-                # cleanup lines
-                return_section_1_list = []
-                for line in section_1_list:
-                    if type(line) is dict:
-                        line = line['#text']
-                    return_section_1_list.append(line)
+                    if not q_section_2:
+                        # http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a?section_1=12
+                        # http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od?section_1=1
+                        return {'refs_decl': refs_decls,
+                                'filepath': text_path,
+                                'section_types': section_types,
+                                'text': return_section_1_object
+                                }
 
-                if not q_section_2:
-                    # http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a?section_1=12
-                    # http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od?section_1=1
-                    return {'refs_decl': refs_decls,
-                            'filepath': text_path,
-                            'section_types': section_types,
-                            'text': return_section_1_list
-                            }
+                    for counter, section_2_item in enumerate(section_1_object):
+                        if type(section_2_item) is dict:
+                            section_2_item = section_2_item['#text']
+                        if counter + 1 == int(q_section_2):
+                            returned_text = section_2_item
 
+            if not q_section_3:
+                return {'refs_decl': refs_decls,
+                        'filepath': text_path,
+                        'section_types': section_types,
+                        'text': returned_text,
+                        }
 
-                for counter, section_2_item in enumerate(section_1_list):
-                    if type(section_2_item) is dict:
-                        section_2_item = section_2_item['#text']
-                    if counter + 1 == int(q_section_2):
-                        returned_text = section_2_item
+        elif type(section_1_object) is dict:
+            # http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.th?section_1=1
+            section_1_type = section_1_object['@type']
+            section_1_number = section_1_object['@n']
+            section_1_list = section_1_object['l']
 
+            # cleanup lines
+            return_section_1_object = []
+            for line in section_1_list:
+                if type(line) is dict:
+                    line = line['#text']
+                return_section_1_object.append(line)
 
+            for counter, section_1_item in enumerate(section_1_list):
+                if type(section_1_item) is dict:
+                    section_1_item = section_1_item['#text']
+                if counter + 1 == int(q_section_1):
+                    returned_text = section_1_item
 
-        return {'refs_decl': refs_decls,
-                'filepath': text_path,
-                'section_types': section_types,
-                'text': returned_text,
-                }
+            return {'refs_decl': refs_decls,
+                    'filepath': text_path,
+                    'section_types': section_types,
+                    'text': returned_text
+                    }
+
 
 # http://localhost:5000/lang/greek/corpus/perseus/authors
 api.add_resource(Authors, '/lang/<string:lang>/corpus/<string:corpus_name>/authors')
