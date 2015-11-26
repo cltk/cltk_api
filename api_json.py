@@ -42,9 +42,6 @@ class Text(Resource):
             if file.startswith(author) and file.endswith(work + '.json'):
                 file_author, file_work = file.split('__')
 
-                #print(file_work[:-5] == work)
-                #print(file_work[:-5])
-                #print(work)
                 if file_author == author and file_work[:-5] == work:
                     json_fp = os.path.join(_dir, file)
 
