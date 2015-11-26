@@ -66,6 +66,7 @@ class Text(Resource):
                        'author': author,
                        'work': work,
                        'text': text,
+                       'meta': file_dict['meta'],
                        }
 
 
