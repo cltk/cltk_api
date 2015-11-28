@@ -94,11 +94,22 @@ class Author(Resource):
         return {'language': lang,
                 'authors': authors}
 
+class Texts(Resource):
+    def get(self, lang, corpus, author):
+        _dir = os.path.join('json', lang, corpus)
+        dirs = os.listdir(_dir)
+        authors_raw = [f[:-5] for f in dirs if f.endswith('.json')]
+        authors = {x.split('__')[0] : x.split('__')[1] for x in authors_raw }
+        return {'language': lang,
+                'corpus': corpus,
+                'author': author,
+                'text': authors[author]}
 
+# http://localhost:5000/lang/latin/corpus/perseus/author/vergil/text
+api.add_resource(Texts, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text')
 
 # http://localhost:5000/lang/latin/corpus/perseus/author
 api.add_resource(Author, '/lang/<string:lang>/corpus/<string:corpus>/author')
-
 
 # http://localhost:5000/lang/latin/corpus
 api.add_resource(Corpus, '/lang/<string:lang>/corpus')
