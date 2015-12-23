@@ -3,14 +3,12 @@
 import json
 import os
 
-from util.jsonp import jsonp
-
-
-
 from flask import Flask
 from flask import request  # for getting query string
 # eg: request.args.get('user') will get '?user=some-value'
 from flask_restful import Resource, Api
+from util.jsonp import jsonp
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -34,10 +32,19 @@ def open_json(fp):
         return json.load(fo)
 
 
+def get_cltk_text_dir(lang):
+    """Take relative filepath, return absolute"""
+    cltk_home = os.path.expanduser('~/cltk_data')
+    text_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_perseus', 'json')
+    return text_dir
+
+
 class Text(Resource):
+
     def get(self, lang, corpus, author, work):
 
-        _dir = os.path.join('json', lang, corpus)
+        _dir = get_cltk_text_dir(lang)
+
         files = os.listdir(_dir)
         for file in files:
             if file.startswith(author) and file.endswith(work + '.json'):
@@ -73,30 +80,59 @@ class Text(Resource):
 
 class Lang(Resource):
     def get(self):
-        _dir = os.path.join('json')
-        dirs = os.listdir(_dir)
-        return {'languages': dirs}
+
+        cltk_home = os.path.expanduser('~/cltk_data')
+        dirs = os.listdir(cltk_home)
+        langs_with_perseus_corpus = []
+        for _dir_lang in dirs:
+            is_perseus_corpus = get_cltk_text_dir(_dir_lang)
+            if os.path.isdir(is_perseus_corpus):
+                langs_with_perseus_corpus.append(_dir_lang)
+
+        return {'languages': langs_with_perseus_corpus}
 
 
 class Corpus(Resource):
-    def get(self, lang):
-        _dir = os.path.join('json', lang)
-        dirs = os.listdir(_dir)
-        return {'language': lang,
-                'corpora': dirs}
 
+    def get(self, lang):
+
+        possible_perseus_corpora_json = get_cltk_text_dir(lang)
+        possible_perseus_corpora = os.path.split(possible_perseus_corpora_json)[0]
+        is_perseus = os.path.isdir(possible_perseus_corpora)
+        corpora = []
+        if is_perseus and possible_perseus_corpora.endswith('_perseus'):
+            corpus_name = os.path.split(possible_perseus_corpora)[1]
+            corpora.append('perseus')
+
+        return {'language': lang,
+                'corpora': corpora}
 
 class Author(Resource):
     def get(self, lang, corpus):
+        '''
         _dir = os.path.join('json', lang, corpus)
         dirs = os.listdir(_dir)
         authors_raw = [f[:-5] for f in dirs if f.endswith('.json')]
         authors = {x.split('__')[0] : x.split('__')[1] for x in authors_raw }
+        '''
+
+        possible_perseus_corpora_json = get_cltk_text_dir(lang)
+
+        authors = set()   # use set to avoid dupes
+        if os.path.isdir(possible_perseus_corpora_json):
+            files = os.listdir(possible_perseus_corpora_json)
+            for file in files:
+                author = file.split('__')[0]
+                authors.add(author)
+        else:
+            print('Corpus not installed into "~/cltk_data".')
+
         return {'language': lang,
-                'authors': authors}
+                'authors': list(authors)}  # cast to list, set() not serializable
 
 class Texts(Resource):
     def get(self, lang, corpus, author):
+        #! KJ: Start here next, make read from ~/cltk_data
         _dir = os.path.join('json', lang, corpus)
         dirs = os.listdir(_dir)
         authors_raw = [f[:-5] for f in dirs if f.endswith('.json')]
