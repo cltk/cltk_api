@@ -32,10 +32,10 @@ def open_json(fp):
         return json.load(fo)
 
 
-def get_cltk_text_dir(lang):
+def get_cltk_text_dir(lang, corpus='perseus'):
     """Take relative filepath, return absolute"""
     cltk_home = os.path.expanduser('~/cltk_data')
-    text_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_perseus', 'json')
+    text_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_' + corpus, 'json')
     return text_dir
 
 
@@ -109,12 +109,6 @@ class Corpus(Resource):
 
 class Author(Resource):
     def get(self, lang, corpus):
-        '''
-        _dir = os.path.join('json', lang, corpus)
-        dirs = os.listdir(_dir)
-        authors_raw = [f[:-5] for f in dirs if f.endswith('.json')]
-        authors = {x.split('__')[0] : x.split('__')[1] for x in authors_raw }
-        '''
 
         possible_perseus_corpora_json = get_cltk_text_dir(lang)
 
@@ -132,12 +126,16 @@ class Author(Resource):
 
 class Texts(Resource):
     def get(self, lang, corpus, author):
-        #! KJ: Start here next, make read from ~/cltk_data
-        _dir = os.path.join('json', lang, corpus)
-        dirs = os.listdir(_dir)
-        authors_raw = [f[:-5] for f in dirs if f.endswith('.json')]
-        author_text_list = [x for x in authors_raw if x.startswith(author)]
-        texts = [x.split('__')[1] for x in author_text_list]
+        home_dir = os.path.expanduser('~/cltk_data')
+        possible_corpus = os.path.join(home_dir, lang, 'text', lang + '_text_' + corpus, 'json')
+        dir_contents = os.listdir(possible_corpus)
+
+        texts = []
+        for file in dir_contents:
+            if file.startswith(author):
+                text = file.split('__')[1][:-5]
+                texts.append(text)
+
         return {'language': lang,
                 'corpus': corpus,
                 'author': author,
