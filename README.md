@@ -3,7 +3,7 @@
 
 A simple Flask app for accessing corpora from the CLTK corpora.  Currently under development.
 
-To run with gunicorn: `gunicorn -w 4 -b 0.0.0.0:5000 api_json:app`.
+To run with gunicorn: `gunicorn -w 4 -b 0.0.0.0:5000 api:app`.
 
 ## Development
 
