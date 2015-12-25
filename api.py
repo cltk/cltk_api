@@ -1,313 +1,170 @@
-"""Main API file for backend CLTK webapp.
+"""Open JSON file and serve."""
 
-The Texts class parses files to get their metadata. This is super cludgy and needs to be redone somehow.
-"""
-
+import json
 import os
+
 from flask import Flask
 from flask import request  # for getting query string
-from flask import json, jsonify
 # eg: request.args.get('user') will get '?user=some-value'
 from flask_restful import Resource, Api
-from flask.ext.pymongo import PyMongo
-from ingest.resources import Ingest
-from api.resources import Query
 from util.jsonp import jsonp
 
+
 app = Flask(__name__)
-mongo = PyMongo(app)
 api = Api(app)
 
 
-class Authors(Resource):
-
-    @jsonp
-    def get(self, lang, corpus_name):
-        # assert lang in ['greek', 'latin']
-        text_path = os.path.expanduser('~/cltk_data/' + lang + '/text/' + lang + '_text_' + corpus_name)
-
-        dir_contents = os.listdir(text_path)
-
-        # Sulpicia dir has no Latin texts
-        # Isocrates dir has no Greek texts
-        remove_files = ['README.md', '.git', 'LICENSE.md', 'perseus_compiler.py', '.DS_Store', 'Sulpicia' , 'Isocrates']
-
-        dir_contents = [f for f in dir_contents if f not in remove_files]
-
-        return {'authors': sorted(dir_contents) }
+# example
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello': 'world'}
 
 
-class Texts(Resource):
+# example
+class TodoSimple(Resource):
+    def get(self, todo_id):
+        return {'example with token': todo_id}
 
-    @jsonp
-    def get(self, lang, corpus_name, author_name):
-        text_path = os.path.expanduser(
-            '~/cltk_data/' + lang + '/text/' + lang + '_text_' + corpus_name + '/' + author_name.casefold() + '/opensource')  # casefold() prob not nec
-        dir_contents = os.listdir(text_path)
-        ending = ''
-        if corpus_name == 'perseus' and lang == 'greek':
-            ending = '_gk.xml.json'
-            if author_name.casefold() == 'aratus':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'jebborators':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'lucretius':
-                ending = '_lat.xml.json'
-            elif author_name.casefold() == 'lycophron':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'nonnos':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'tryphiodorus':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'callimachus':
-                ending = '.xml.json'
-        elif corpus_name == 'perseus' and lang == 'latin':
-            ending = '_lat.xml.json'
-            # weird exceptions
-            if author_name.casefold() == 'histaugust':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'quintus':
-                ending = '.xml.json'
-        dir_contents = [f for f in dir_contents if f.endswith(ending)]
-        dir_contents = [f.casefold() for f in dir_contents]  # this probably isn't nec
-        return json.dumps( {'texts': sorted(dir_contents)} )
+
+def open_json(fp):
+    """Open json file, return json."""
+    with open(fp) as fo:
+        return json.load(fo)
+
+
+def get_cltk_text_dir(lang, corpus='perseus'):
+    """Take relative filepath, return absolute"""
+    cltk_home = os.path.expanduser('~/cltk_data')
+    text_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_' + corpus, 'json')
+    return text_dir
 
 
 class Text(Resource):
 
-    @jsonp
-    def get(self, lang, corpus_name, author_name, fname):
+    def get(self, lang, corpus, author, work):
 
-        text_path = os.path.expanduser(
-            '~/cltk_data/') + lang + '/text/' + lang + '_text_' + corpus_name + '/' + author_name + '/opensource/' + fname
-        ending = ''
-        if corpus_name == 'perseus' and lang == 'greek':
-            ending = '_gk.xml.json'
-            if author_name.casefold() == 'aratus':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'jebborators':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'lucretius':
-                ending = '_lat.xml.json'
-            elif author_name.casefold() == 'lycophron':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'nonnos':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'tryphiodorus':
-                ending = '.xml.json'
-            elif author_name.casefold() == 'callimachus':
-                if fname.startswith('call_0'):
-                    ending = '.xml.json'
-        elif corpus_name == 'perseus' and lang == 'latin':
-            ending = '_lat.xml.json'
-            # weird exceptions
-            if author_name.casefold() == 'histaugust' or author_name.casefold() == 'quintus':
-                ending = '.xml.json'
+        _dir = get_cltk_text_dir(lang)
 
-        text_path += ending
-        with open(text_path, "r") as f:  # TODO: use json.loads() for all this
-            file_string = f.read()
-        file_json = json.loads(file_string)
+        files = os.listdir(_dir)
+        for file in files:
+            if file.startswith(author) and file.endswith(work + '.json'):
+                file_author, file_work = file.split('__')
 
-        # Some files are odd
-        if author_name.casefold() in ['quintus', 'aratus', 'callimachus', 'colluthus', 'lycophron', 'nonnos', 'tryphiodorus']:
-            encoding_desc = file_json['TEI.2']['teiHeader']['encodingDesc']
-            if type(encoding_desc) is list:
-                for desc in encoding_desc:
-                    try:
-                        quintus = True
-                        refs_decls = desc.get('refsDecl')
-                        break
-                    except Exception:
-                        pass
-        # everyone else
-        else:
-            refs_decls = file_json['TEI.2']['teiHeader']['encodingDesc']['refsDecl']
+                if file_author == author and file_work[:-5] == work:
+                    json_fp = os.path.join(_dir, file)
 
-        section_types = []  # list of lists
-        if type(refs_decls) is list:
-            for refs_decl in refs_decls:
-                if refs_decl.get('@doctype') == 'TEI.2' and 'state' in refs_decl:
-                    states = refs_decl['state']
-                    if type(states) is list:
-                        units = []
-                        for state in states:
-                            unit = state['@unit']
-                            units.append(unit)
-                        section_types.append(units)
-                    elif type(states) is dict:
-                        state = states
-                        unit = state['@unit']
-                        section_types.append([unit])
-                elif 'state' in refs_decl:
-                    states = refs_decl['state']
-                    if type(states) is list:
-                        units = []
-                        for state in states:
-                            unit = state['@unit']
-                            units.append(unit)
-                        section_types.append(units)
+                file_dict = open_json(json_fp)
+                text = file_dict['text']
 
-        elif type(refs_decls) is dict:
-            refs_decl = refs_decls
-            if refs_decl.get('@doctype') == 'TEI.2' and 'state' in refs_decl:
-                states = refs_decl['state']
-                if type(states) is list:
-                    units = []
-                    for state in states:
-                        unit = state['@unit']
-                        units.append(unit)
-                    section_types = [units]
-                elif type(states) is dict:
-                    state = refs_decl['state']
-                    unit = state['@unit']
-                    section_types.append([unit])
-            elif refs_decl.get('@doctype') == 'TEI.2' and 'step' in refs_decl:
-                steps = refs_decl['step']
-                if type(steps) is list:
-                    units = []
-                    for state in steps:
-                        unit = state['@refunit']
-                        units.append(unit)
-                    section_types = [units]
-                elif type(steps) is dict:
-                    step = refs_decl['step']
-                    unit = step['@refunit']
-                    section_types.append([unit])
-            elif refs_decl.get('@doctype') != 'TEI.2' and 'step' in refs_decl:
-                print('*' * 40)
-                steps = refs_decl['step']
-                if type(steps) is list:
-                    units = []
-                    for state in steps:
-                        unit = state['@refunit']
-                        units.append(unit)
-                    section_types = [units]
-                elif type(steps) is dict:
-                    step = refs_decl['step']
-                    unit = step['@refunit']
-                    section_types.append([unit])
+                chunk1 = request.args.get('chunk1')
+                chunk2 = request.args.get('chunk2')
+                chunk3 = request.args.get('chunk3')
 
-            # Some entries missing `{'@doctype': 'TEI.2'}` (eg, Pliny's `pliny.min.letters`)
-            elif refs_decl.get('@doctype') != 'TEI.2' and 'state' in refs_decl:
-                states = refs_decl['state']
-                if type(states) is list:
-                    units = []
-                    for state in states:
-                        unit = state['@unit']
-                        units.append(unit)
-                    section_types = [units]
-                elif type(states) is dict:
-                    state = refs_decl['state']
-                    unit = state['@unit']
-                    section_types.append([unit])
+                if chunk1:
+                    text = text[chunk1]
 
+                if chunk2:
+                    text = text[chunk2]
 
-        # Parse query strings
-        q_section_1 = request.args.get('section_1')
-        q_section_2 = request.args.get('section_2')
-        q_section_3 = request.args.get('section_3')
-        q_section_4 = request.args.get('section_4')
-        q_section_5 = request.args.get('section_5')
+                if chunk3:
+                    text = text[chunk3]
 
-        # If no query string, return text object
-        if not q_section_1:
-            return {'refs_decl': refs_decls,
-                    'filepath': text_path,
-                    'section_types': section_types,
-                    'text': file_json['TEI.2']['text']
-                    }
-
-        # Parse text according to query string
-        section_1_object = file_json['TEI.2']['text']['body']['div1']
-
-        if type(section_1_object) is list:
-            for section_1 in section_1_object:
-                try:
-                    section_1_number = section_1['@n']  # str
-                except KeyError:
-                    # http://localhost:5000/lang/greek/corpus/perseus/author/Aeschylus/text/aesch.ag?section_1=1
-                    # Something funny. Redefine section_1 to s.th. deeper embedded
-                    #! This pathway is broke and I don't know if I want to make this more convoluted than it is. Dammit.
-                    section_1 = section_1['div2']['sp']
-
-                if section_1_number == q_section_1:
-                    section_1_object = section_1['l']  # list
-
-                    # cleanup lines
-                    return_section_1_object = []
-                    for line in section_1_object:
-                        if type(line) is dict:
-                            line = line['#text']
-                        return_section_1_object.append(line)
-
-                    if not q_section_2:
-                        # http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a?section_1=12
-                        # http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od?section_1=1
-                        return {'refs_decl': refs_decls,
-                                'filepath': text_path,
-                                'section_types': section_types,
-                                'text': return_section_1_object
-                                }
-
-                    for counter, section_2_item in enumerate(section_1_object):
-                        if type(section_2_item) is dict:
-                            section_2_item = section_2_item['#text']
-                        if counter + 1 == int(q_section_2):
-                            returned_text = section_2_item
-
-            if not q_section_3:
-                return {'refs_decl': refs_decls,
-                        'filepath': text_path,
-                        'section_types': section_types,
-                        'text': returned_text,
+                return {'language': lang,
+                        'corpus': corpus,
+                        'author': author,
+                        'work': work,
+                        'text': text,
+                        'meta': file_dict['meta'],
                         }
 
-        elif type(section_1_object) is dict:
-            # http://localhost:5000/lang/greek/corpus/perseus/author/Hesiod/text/hes.th?section_1=1
-            section_1_type = section_1_object['@type']
-            section_1_number = section_1_object['@n']
-            section_1_list = section_1_object['l']
 
-            # cleanup lines
-            return_section_1_object = []
-            for line in section_1_list:
-                if type(line) is dict:
-                    line = line['#text']
-                return_section_1_object.append(line)
+class Lang(Resource):
+    def get(self):
 
-            for counter, section_1_item in enumerate(section_1_list):
-                if type(section_1_item) is dict:
-                    section_1_item = section_1_item['#text']
-                if counter + 1 == int(q_section_1):
-                    returned_text = section_1_item
+        cltk_home = os.path.expanduser('~/cltk_data')
+        dirs = os.listdir(cltk_home)
+        langs_with_perseus_corpus = []
+        for _dir_lang in dirs:
+            is_perseus_corpus = get_cltk_text_dir(_dir_lang)
+            if os.path.isdir(is_perseus_corpus):
+                langs_with_perseus_corpus.append(_dir_lang)
 
-            return {'refs_decl': refs_decls,
-                    'filepath': text_path,
-                    'section_types': section_types,
-                    'text': returned_text
-                    }
+        return {'languages': langs_with_perseus_corpus}
 
 
-# http://localhost:5000/lang/greek/corpus/perseus/authors
-api.add_resource(Authors, '/lang/<string:lang>/corpus/<string:corpus_name>/authors')
+class Corpus(Resource):
 
-# http://localhost:5000/lang/greek/corpus/perseus/author/Homer/texts
-api.add_resource(Texts, '/lang/<string:lang>/corpus/<string:corpus_name>/author/<string:author_name>/texts')
+    def get(self, lang):
 
-# http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a
-# http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od
+        possible_perseus_corpora_json = get_cltk_text_dir(lang)
+        possible_perseus_corpora = os.path.split(possible_perseus_corpora_json)[0]
+        is_perseus = os.path.isdir(possible_perseus_corpora)
+        corpora = []
+        if is_perseus and possible_perseus_corpora.endswith('_perseus'):
+            corpus_name = os.path.split(possible_perseus_corpora)[1]
+            corpora.append('perseus')
 
-# http://localhost:5000/lang/latin/corpus/perseus/author/Vergil/text/verg.a?section_1=1&section_2=1
-# http://localhost:5000/lang/greek/corpus/perseus/author/Homer/text/hom.od?section_1=1&section_2=1
-api.add_resource(Text,
-                 '/lang/<string:lang>/corpus/<string:corpus_name>/author/<string:author_name>/text/<string:fname>')
+        return {'language': lang,
+                'corpora': corpora}
 
-# Trigger new document ingest
-api.add_resource(Ingest, '/ingest')
+class Author(Resource):
+    def get(self, lang, corpus):
 
-# Feed GET params to query to DB
-api.add_resource(Query, '/query')
+        possible_perseus_corpora_json = get_cltk_text_dir(lang)
+
+        authors = set()   # use set to avoid dupes
+        if os.path.isdir(possible_perseus_corpora_json):
+            files = os.listdir(possible_perseus_corpora_json)
+            for file in files:
+                author = file.split('__')[0]
+                authors.add(author)
+        else:
+            print('Corpus not installed into "~/cltk_data".')
+
+        return {'language': lang,
+                'authors': list(authors)}  # cast to list, set() not serializable
+
+class Texts(Resource):
+    def get(self, lang, corpus, author):
+        home_dir = os.path.expanduser('~/cltk_data')
+        possible_corpus = os.path.join(home_dir, lang, 'text', lang + '_text_' + corpus, 'json')
+        dir_contents = os.listdir(possible_corpus)
+
+        texts = []
+        for file in dir_contents:
+            if file.startswith(author):
+                text = file.split('__')[1][:-5]
+                texts.append(text)
+
+        return {'language': lang,
+                'corpus': corpus,
+                'author': author,
+                'texts': texts}
+
+# http://localhost:5000/lang/latin/corpus/perseus/author/vergil/text
+# http://localhost:5000/lang/greek/corpus/perseus/author/homer/text
+api.add_resource(Texts, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text')
+
+# http://localhost:5000/lang/latin/corpus/perseus/author
+api.add_resource(Author, '/lang/<string:lang>/corpus/<string:corpus>/author')
+
+# http://localhost:5000/lang/latin/corpus
+api.add_resource(Corpus, '/lang/<string:lang>/corpus')
+
+
+# http://localhost:5000/lang
+api.add_resource(Lang, '/lang')
+
+
+# http://localhost:5000/lang/greek/corpus/perseus/author/achilles_tatius/text/leucippe_et_clitophon?chunk1=1&chunk2=1&chunk3=1
+# http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey
+# http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?chunk1=1&chunk2=1
+api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>')
+#api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>/<string:chunk1>')
+
+# simple examples
+api.add_resource(TodoSimple, '/todo/<string:todo_id>')
+api.add_resource(HelloWorld, '/hello')
 
 if __name__ == '__main__':
     app.run(debug=True)
