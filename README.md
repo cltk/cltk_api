@@ -8,7 +8,7 @@ The Classics Archive application is currently under active development and is no
 
 A simple Flask app for accessing corpora from the CLTK corpora.  Currently under development.
 
-To run with gunicorn: `gunicorn -w 4 -b 0.0.0.0:5000 api:app`.
+To run with gunicorn: `gunicorn -w 4 -b 0.0.0.0:5000 api_json:app`.
 
 ## Development
 
