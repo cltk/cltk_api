@@ -25,6 +25,6 @@ Install dependencies:
 
 Finally, start the app with the following command:
 
-`$ python api.py`
+`$ python api_json.py`
 
 
