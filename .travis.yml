@@ -1,0 +1,15 @@
+sudo: required
+
+language: python
+
+python:
+  - "3.5"
+
+before_script:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+
+script:
+  # Notes on nose:
+  # Travis CI pre-installs `nose`
+  - nosetests
