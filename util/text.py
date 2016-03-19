@@ -2,6 +2,7 @@
 Sundry utility functions for sanitizing textual data
 """
 import re
+import string
 import unicodedata as ud
 
 class TextUtil:
@@ -25,5 +26,8 @@ class TextUtil:
 
 		return flag
 
+	def strip_punctution( s ):
 
+	    exclude = set(string.punctuation)
 
+	    return ''.join(ch for ch in s if ch not in exclude)
