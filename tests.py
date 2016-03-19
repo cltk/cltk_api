@@ -1,8 +1,9 @@
 import os
 import unittest
 import api_json
+import json
 from cltk.corpus.utils.importer import CorpusImporter
-
+from metadata.pos.constants import POS_METHODS
 
 class TestAPIMethods(unittest.TestCase):
     """Requires latin_text_perseus folder in ~/cltk_data/latin/text/latin_text_perseus"""
@@ -17,6 +18,7 @@ class TestAPIMethods(unittest.TestCase):
             self.assertTrue(file_exists)
 
         self.app = api_json.app.test_client()
+        self.headers = [('Content-Type', 'application/json')]
 
     def test_home(self):
         response = self.app.get('/')
@@ -79,6 +81,26 @@ class TestAPIMethods(unittest.TestCase):
         response_chunk3 = self.app.get('/lang/latin/corpus/perseus/author/tacitus/text/germania?chunk1=2&chunk2=4&chunk3=1')
         self.assertEqual(response_chunk3.status, '500 INTERNAL SERVER ERROR')
 
+    def test_pos_latin_ngram123(self):
+        # test GET response
+        response = self.app.get('/core/pos')
+        expected_response = {'methods': POS_METHODS}
+        self.assertEqual(eval(response.data), expected_response)
+
+        # test POST response
+        data = json.dumps({'string': 'Gallia est omnis divisa in partes tres',
+                           'lang': 'latin',
+                           'method': 'ngram123'})
+        response = self.app.post('/core/pos', data=data, headers=self.headers)
+        expected_response = {u'tags': [{'word': 'Gallia', 'tag': 'None'},
+                                       {'word': 'est', 'tag': 'V3SPIA---'},
+                                       {'word': 'omnis', 'tag': 'A-S---MN-'},
+                                       {'word': 'divisa', 'tag': 'T-PRPPNN-'},
+                                       {'word': 'in', 'tag': 'R--------'},
+                                       {'word': 'partes', 'tag': 'N-P---FA-'},
+                                       {'word': 'tres', 'tag': 'M--------'}]}
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(eval(response.data), expected_response)
 
 if __name__ == '__main__':
     unittest.main()
