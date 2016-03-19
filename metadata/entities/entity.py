@@ -32,5 +32,6 @@ class Entity:
 		"""
 		Fetch metadata, images, and summaries about an entity from Wikipedia
 		"""
+		self.wikipedia_entity = Wikipedia.query(self.name_english)
 
-		return Wikipedia.query(self.name_english)
+		return
