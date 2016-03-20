@@ -8,7 +8,7 @@ from flask import request  # for getting query string
 # eg: request.args.get('user') will get '?user=some-value'
 from flask_restful import Resource, Api
 from util.jsonp import jsonp
-
+from metadata.pos.views import POSTagger
 
 app = Flask(__name__)
 api = Api(app)
@@ -161,6 +161,9 @@ api.add_resource(Lang, '/lang')
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?chunk1=1&chunk2=1
 api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>')
 #api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>/<string:chunk1>')
+
+# CLTK core
+api.add_resource(POSTagger, '/core/pos', endpoint='pos')
 
 # simple examples
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
