@@ -9,6 +9,7 @@ from flask import request  # for getting query string
 from flask_restful import Resource, Api
 from util.jsonp import jsonp
 from metadata.pos.views import POSTagger
+from metadata.stem.views import Stem
 
 app = Flask(__name__)
 api = Api(app)
@@ -164,6 +165,9 @@ api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<strin
 
 # CLTK core
 api.add_resource(POSTagger, '/core/pos', endpoint='pos')
+
+# CLTK core stemmer
+api.add_resource(Stem, '/core/stem/<string:sentence>')
 
 # simple examples
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
