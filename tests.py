@@ -14,6 +14,7 @@ class TestAPIMethods(unittest.TestCase):
         if not os.path.isfile(file):
             corpus_importer = CorpusImporter('latin')
             corpus_importer.import_corpus('latin_text_perseus')
+            corpus_importer.import_corpus('latin_models_cltk')
             file_exists = os.path.isfile(file)
             self.assertTrue(file_exists)
 
