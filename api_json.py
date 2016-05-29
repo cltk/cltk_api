@@ -9,6 +9,8 @@ from flask import request  # for getting query string
 from flask_restful import Resource, Api
 from util.jsonp import jsonp
 
+from metadata.definition.views import Definition
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -161,6 +163,9 @@ api.add_resource(Lang, '/lang')
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?chunk1=1&chunk2=1
 api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>')
 #api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>/<string:chunk1>')
+
+# http://localhost:5000/lang/latin/define/abante
+api.add_resource(Definition, '/lang/<string:lang>/define/<string:word>')
 
 # simple examples
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
