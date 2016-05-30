@@ -28,11 +28,11 @@ class Wikipedia:
 		wikipedia_entity = {}
 
 		# Get a list of results from wikipedia for the input entity name
-		entity_results = wikipedia.search(entity_name)
+		entity_results = wikipedia.search(entity_name, suggestion=True)
 
 		# For the moment, just use the first wikipedia entry
 		# Perhaps work in wikipedia.suggest in the future
-		if len(entity_results):
+		try:
 			wikipedia_entity['name'] = entity_results[0]
 
 			# Get the summary
@@ -44,6 +44,9 @@ class Wikipedia:
 
 
 			# Get anything else we might need...
-
-
-		return wikipedia_entity
+	
+		except:
+			wikipedia_entity = {}
+		finally:
+			return wikipedia_entity
+			
