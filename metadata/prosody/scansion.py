@@ -1,3 +1,10 @@
+"""
+A class for predicting scansion in a line of Latin dactylic hexameter
+
+May possibly be reworked with CLTK prosody modules in the future.
+"""
+
+
 from cltk.util.syllabifier import Syllabifier
 import string
 import re

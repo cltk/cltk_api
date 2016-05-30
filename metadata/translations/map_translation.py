@@ -1,6 +1,6 @@
 """
 
-Map a translation to the original
+Map a translation of a Latin document to the original Latin document
 
 Must already have definitions ingested for this to work
 
@@ -13,7 +13,6 @@ import re
 import copy
 import string
 import numpy as np
-from cltk_api.util.db import mongo
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -28,12 +27,13 @@ class MapTranslation:
 		self.trans_fname = settings.fname
 		self.work = settings.work
 		self.subwork = { 'n' : int( settings.subwork ) }
-		self.dbname = settings.dbname
 		self.translators = [ settings.author ]
 		self.edition_slug = settings.author
 
-		self.db = mongo( self.dbname )
-		self.len_orig = self.db.lines.find({'work':self.work, 'subwork.n': self.subwork['n'] }).count()
+		# Get the length of the original work
+		self.len_orig = 0
+
+		# Get the length of the translation
 		self.len_trans = 0
 
 		# Threshold settings for association
@@ -118,19 +118,12 @@ class MapTranslation:
 	def _map_unit( self, i, syns, text_unit_orig ):
 
 
-		self.db = mongo( self.dbname )
 		target_n = self.ratio * i
 		l_n_min = np.floor( target_n - self.r )
 		l_n_max = np.ceil( target_n + self.r )
 
-		lines = self.db.lines.find({
-					'work' : "aeneid",
-					'subwork.n' : 1,
-					'line.n' : {
-							'$gte' : l_n_min,
-							'$lte' : l_n_max
-						}
-				})
+		# This is where we need to load lines from the original work
+		lines = []
 
 		line_ms = []
 		for line in lines:
@@ -218,35 +211,4 @@ class MapTranslation:
 				# Append for base-1 counting
 				trans_l_ns.append( line_n + 1 )
 
-		print ( " -- Line", i )
-		# print ( " -- -- ", trans_l_ns )
-		# print ( " -- -- ", line_ms )
-
-		self._save_trans( i, text_unit_orig, trans_l_ns )
-
-
-		return
-
-	def _save_trans( self, i, text_unit_orig, trans_l_ns ):
-
-		# base-1 for lines
-		i = i + 1
-
-		obj = {
-				'work' : self.work,
-				'subwork' : self.subwork,
-				'line' : {
-						'text' : text_unit_orig,
-						'n' : i
-					},
-				'orig_l_ns' : trans_l_ns,
-				'edition' : {
-						'translators' : self.translators,
-						'slug' : self.edition_slug
-					}
-			}
-
-		# print( " -- --", obj )
-		self.db.translations.insert( obj )
-
-		return
+		return trans_l_ns
