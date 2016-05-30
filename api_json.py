@@ -10,6 +10,7 @@ from flask_restful import Resource, Api
 from util.jsonp import jsonp
 from metadata.pos.views import POSTagger
 from metadata.stem.views import Stem
+from metadata.definition.views import Definition
 
 app = Flask(__name__)
 api = Api(app)
@@ -163,16 +164,20 @@ api.add_resource(Lang, '/lang')
 api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>')
 #api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>/<string:chunk1>')
 
-# CLTK core
+# CLTK core pos
 api.add_resource(POSTagger, '/core/pos', endpoint='pos')
 
 # CLTK core stemmer
 api.add_resource(Stem, '/core/stem/<string:sentence>')
+
+# CLTK definitions 
+# http://localhost:5000/lang/latin/define/abante
+api.add_resource(Definition, '/lang/<string:lang>/define/<string:word>')
 
 # simple examples
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
 api.add_resource(HelloWorld, '/hello')
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    #app.run(host='0.0.0.0')
+    #app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
