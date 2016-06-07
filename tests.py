@@ -108,5 +108,12 @@ class TestAPIMethods(unittest.TestCase):
         self.assertEqual(response.status, "200 OK")
         self.assertEqual(eval(response.data)['stemmed_output'], 'est interd praestar mercatur r quaerere, nisi tam periculos sit, et it foenerari, si tam honestum. maior nostr sic habueru et ita in leg posiuerunt: fur dupl condemnari, foenerator quadrupli. quant peior ciu existimari foenerator quam furem, hinc lice existimare. et uir bon quo laudabant, ita laudabant: bon agricol bon colonum; amplissim laudar existimaba qui ita laudabatur. mercator autem strenu studios re quaerend existimo, uerum, ut supr dixi, periculos et calamitosum. at ex agricol et uir fortissim et milit strenuissim gignuntur, maxim p quaest stabilissim consequi minim inuidiosus, minim mal cogitant su qui in e studi occupat sunt. nunc, ut ad r redeam, quod promis institut principi hoc erit. ')
 
+    def test_definition_api(self):
+        response = self.app.get('lang/latin/define/abante')
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(eval(response.data)[0]['headword'], 'Abas')
+        self.assertEqual(eval(response.data)[0]['definition'], 'The twelfth king of Argos, son of Lynceus and Hypermnestra')
+        self.assertEqual(eval(response.data)[0]['pos'], 'noun sg masc abl')
+
 if __name__ == '__main__':
     unittest.main()
