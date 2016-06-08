@@ -9,13 +9,21 @@ class TestAPIMethods(unittest.TestCase):
     """Requires latin_text_perseus folder in ~/cltk_data/latin/text/latin_text_perseus"""
 
     def setUp(self):
-        file_rel = os.path.join('~/cltk_data/latin/text/latin_text_perseus/README.md')
-        file = os.path.expanduser(file_rel)
-        if not os.path.isfile(file):
+        file_rel_text = os.path.join('~/cltk_data/latin/text/latin_text_perseus/README.md')
+        file_text = os.path.expanduser(file_rel_text)
+        if not os.path.isfile(file_text):
             corpus_importer = CorpusImporter('latin')
             corpus_importer.import_corpus('latin_text_perseus')
             corpus_importer.import_corpus('latin_models_cltk')
-            file_exists = os.path.isfile(file)
+            file_exists = os.path.isfile(file_text)
+            self.assertTrue(file_exists)
+            
+        file_rel_treebank = os.path.join('~/cltk_data/latin/treebank/latin_treebank_perseus/README.md')
+        file_treebank = os.path.expanduser(file_rel_treebank)
+        if not os.path.isfile(file_rel_treebank):
+            corpus_importer = CorpusImporter('latin')
+            corpus_importer.import_corpus('latin_treebank_perseus')
+            file_exists = os.path.isfile(file_treebank)
             self.assertTrue(file_exists)
 
         self.app = api_json.app.test_client()
@@ -107,6 +115,13 @@ class TestAPIMethods(unittest.TestCase):
         response = self.app.get('/core/stem/Est interdum praestare mercaturis rem quaerere, nisi tam periculosum sit, et item foenerari, si tam honestum. Maiores nostri sic habuerunt et ita in legibus posiuerunt: furem dupli condemnari, foeneratorem quadrupli. Quanto peiorem ciuem existimarint foeneratorem quam furem, hinc licet existimare. Et uirum bonum quom laudabant, ita laudabant: bonum agricolam bonumque colonum; amplissime laudari existimabatur qui ita laudabatur. Mercatorem autem strenuum studiosumque rei quaerendae existimo, uerum, ut supra dixi, periculosum et calamitosum. At ex agricolis et uiri fortissimi et milites strenuissimi gignuntur, maximeque pius quaestus stabilissimusque consequitur minimeque inuidiosus, minimeque male cogitantes sunt qui in eo studio occupati sunt. Nunc, ut ad rem redeam, quod promisi institutum principium hoc erit.')
         self.assertEqual(response.status, "200 OK")
         self.assertEqual(eval(response.data)['stemmed_output'], 'est interd praestar mercatur r quaerere, nisi tam periculos sit, et it foenerari, si tam honestum. maior nostr sic habueru et ita in leg posiuerunt: fur dupl condemnari, foenerator quadrupli. quant peior ciu existimari foenerator quam furem, hinc lice existimare. et uir bon quo laudabant, ita laudabant: bon agricol bon colonum; amplissim laudar existimaba qui ita laudabatur. mercator autem strenu studios re quaerend existimo, uerum, ut supr dixi, periculos et calamitosum. at ex agricol et uir fortissim et milit strenuissim gignuntur, maxim p quaest stabilissim consequi minim inuidiosus, minim mal cogitant su qui in e studi occupat sunt. nunc, ut ad r redeam, quod promis institut principi hoc erit. ')
+
+    def test_definition_api(self):
+        response = self.app.get('lang/latin/define/abante')
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(eval(response.data)[0]['headword'], 'Abas')
+        self.assertEqual(eval(response.data)[0]['definition'], 'The twelfth king of Argos, son of Lynceus and Hypermnestra')
+        self.assertEqual(eval(response.data)[0]['pos'], 'noun sg masc abl')
 
 if __name__ == '__main__':
     unittest.main()
