@@ -9,13 +9,21 @@ class TestAPIMethods(unittest.TestCase):
     """Requires latin_text_perseus folder in ~/cltk_data/latin/text/latin_text_perseus"""
 
     def setUp(self):
-        file_rel = os.path.join('~/cltk_data/latin/text/latin_text_perseus/README.md')
-        file = os.path.expanduser(file_rel)
-        if not os.path.isfile(file):
+        file_rel_text = os.path.join('~/cltk_data/latin/text/latin_text_perseus/README.md')
+        file_text = os.path.expanduser(file_rel_text)
+        if not os.path.isfile(file_text):
             corpus_importer = CorpusImporter('latin')
             corpus_importer.import_corpus('latin_text_perseus')
             corpus_importer.import_corpus('latin_models_cltk')
-            file_exists = os.path.isfile(file)
+            file_exists = os.path.isfile(file_text)
+            self.assertTrue(file_exists)
+            
+        file_rel_treebank = os.path.join('~/cltk_data/latin/treebank/latin_treebank_perseus/README.md')
+        file_treebank = os.path.expanduser(file_rel_treebank)
+        if not os.path.isfile(file_rel_treebank):
+            corpus_importer = CorpusImporter('latin')
+            corpus_importer.import_corpus('latin_treebank_perseus')
+            file_exists = os.path.isfile(file_treebank)
             self.assertTrue(file_exists)
 
         self.app = api_json.app.test_client()
