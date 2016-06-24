@@ -12,6 +12,8 @@ from metadata.pos.views import POSTagger
 from metadata.stem.views import Stem
 from metadata.definition.views import Definition
 
+from flask_restful import reqparse
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -40,44 +42,73 @@ def get_cltk_text_dir(lang, corpus='perseus'):
     text_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_' + corpus, 'json')
     return text_dir
 
+def get_cltk_translation_dir(lang, translation_lang, corpus='perseus'):
+    """Take relative filepath, return absolute"""
+    cltk_home = os.path.expanduser('~/cltk_data')
+    translation_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_' + corpus, 'translation', translation_lang)
+    return translation_dir
 
 class Text(Resource):
 
     def get(self, lang, corpus, author, work):
 
-        _dir = get_cltk_text_dir(lang)
+        parser = reqparse.RequestParser()
+        parser.add_argument('translation',)
+        args = parser.parse_args()
+        translation_lang = args.get('translation')
 
-        files = os.listdir(_dir)
-        for file in files:
-            if file.startswith(author) and file.endswith(work + '.json'):
-                file_author, file_work = file.split('__')
+        if(translation_lang):
+            # Assumes translation data file name as "author__work__language.json"
+            _dir = get_cltk_translation_dir(lang, translation_lang)
+            file = author + "__" + work + ".json";
+            json_fp = os.path.join(_dir, file);
 
-                if file_author == author and file_work[:-5] == work:
-                    json_fp = os.path.join(_dir, file)
-
+            try:
                 file_dict = open_json(json_fp)
-                text = file_dict['text']
+            except Exception as e:
+                return
+                
+            return {'language': lang,
+                    'corpus': corpus,
+                    'author': author,
+                    'work': work,
+                    'translations': file_dict['translations'],
+                    'meta': file_dict['meta'],
+                    }
 
-                chunk1 = request.args.get('chunk1')
-                chunk2 = request.args.get('chunk2')
-                chunk3 = request.args.get('chunk3')
+        else:
+            _dir = get_cltk_text_dir(lang)
+            file = author + "__" + work + ".json";
 
-                if chunk1:
-                    text = text[chunk1]
+            json_fp = os.path.join(_dir, file)
 
-                if chunk2:
-                    text = text[chunk2]
+            try:
+                file_dict = open_json(json_fp)
+            except Exception as e:
+                return
 
-                if chunk3:
-                    text = text[chunk3]
+            text = file_dict['text']
 
-                return {'language': lang,
-                        'corpus': corpus,
-                        'author': author,
-                        'work': work,
-                        'text': text,
-                        'meta': file_dict['meta'],
-                        }
+            chunk1 = request.args.get('chunk1')
+            chunk2 = request.args.get('chunk2')
+            chunk3 = request.args.get('chunk3')
+
+            if chunk1:
+                text = text[chunk1]
+
+            if chunk2:
+                text = text[chunk2]
+
+            if chunk3:
+                text = text[chunk3]
+
+            return {'language': lang,
+                    'corpus': corpus,
+                    'author': author,
+                    'work': work,
+                    'text': text,
+                    'meta': file_dict['meta'],
+                    }
 
 
 class Lang(Resource):
@@ -161,6 +192,7 @@ api.add_resource(Lang, '/lang')
 # http://localhost:5000/lang/greek/corpus/perseus/author/achilles_tatius/text/leucippe_et_clitophon?chunk1=1&chunk2=1&chunk3=1
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?chunk1=1&chunk2=1
+# http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?translation=english
 api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>')
 #api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>/<string:chunk1>')
 

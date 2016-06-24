@@ -123,5 +123,17 @@ class TestAPIMethods(unittest.TestCase):
         self.assertEqual(eval(response.data)[0]['definition'], 'The twelfth king of Argos, son of Lynceus and Hypermnestra')
         self.assertEqual(eval(response.data)[0]['pos'], 'noun sg masc abl')
 
+    def test_translation_api(self):
+        response = self.app.get('/lang/latin/corpus/perseus/author/catullus/text/poemata?translation=english')
+        self.assertEqual(response.status, '200 OK')
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(data['language'], 'latin')
+        self.assertEqual(data['corpus'], 'perseus')
+        self.assertEqual(data['author'], 'catullus')
+        self.assertEqual(data['meta'], 'poem-line')
+        self.assertEqual(data['work'], 'poemata')
+        self.assertEqual(data['translations'][0]['translator'], 'Sir R. F. Burton')
+        self.assertEqual(data['translations'][0]['text']['1']['1'], 'To thee (Cornelius!); for wast ever fain')
+
 if __name__ == '__main__':
     unittest.main()
