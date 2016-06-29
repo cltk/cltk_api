@@ -48,16 +48,53 @@ def get_cltk_translation_dir(lang, translation_lang, corpus='perseus'):
     translation_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_' + corpus, 'translation', translation_lang)
     return translation_dir
 
+def get_cltk_commentary_dir(lang, corpus='perseus'):
+    """Take relative filepath, return absolute"""
+    cltk_home = os.path.expanduser('~/cltk_data')
+    commentary_dir = os.path.join(cltk_home, lang.casefold(), 'text', lang.casefold() + '_text_' + corpus, 'commentary')
+    return commentary_dir
+
 class Text(Resource):
 
     def get(self, lang, corpus, author, work):
 
         parser = reqparse.RequestParser()
-        parser.add_argument('translation',)
+        parser.add_argument('translation')
+        parser.add_argument('commentary')
         args = parser.parse_args()
         translation_lang = args.get('translation')
+        commentary_author = args.get('commentary')
 
-        if(translation_lang):
+        if(commentary_author):
+            _dir = get_cltk_commentary_dir(lang)
+            file = author + "__" + work + ".json";
+            json_fp = os.path.join(_dir, file);
+
+            try:
+                file_dict = open_json(json_fp)
+            except Exception as e:
+                return
+
+            commentary = []
+            if(commentary_author == "all"):
+                # Add all commentary
+                commentary = file_dict["commentary"]
+            else:
+                # Add commentary by specific author
+                for item in file_dict["commentary"]:
+                    print(item)
+                    if item['author'] == commentary_author:
+                        commentary.append(item)
+
+            return {'language': lang,
+                    'corpus': corpus,
+                    'author': author,
+                    'work': work,
+                    'commentary': commentary,
+                    'meta': file_dict['meta'],
+                    }
+
+        elif(translation_lang):
             # Assumes translation data file name as "author__work__language.json"
             _dir = get_cltk_translation_dir(lang, translation_lang)
             file = author + "__" + work + ".json";
@@ -193,6 +230,8 @@ api.add_resource(Lang, '/lang')
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?chunk1=1&chunk2=1
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?translation=english
+# http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?commentary=all
+# http://localhost:5000/lang/greek/corpus/perseus/author/homer/text/odyssey?commentary=E. T. Merril
 api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>')
 #api.add_resource(Text, '/lang/<string:lang>/corpus/<string:corpus>/author/<string:author>/text/<string:work>/<string:chunk1>')
 
