@@ -86,3 +86,8 @@ gcloud docker push gcr.io/$PROJECT_ID/cltk-api:v2
 ``` bash
 kubectl set image deployment/cltk-api cltk-api=gcr.io/$PROJECT_ID/cltk-api:v2
 ```
+
+
+## License
+
+The CLTK is Copyright (c) 2016 Kyle P. Johnson, under the MIT License. See [LICENSE](https://github.com/cltk/cltk/blob/master/LICENSE) for details.
