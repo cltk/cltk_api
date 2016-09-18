@@ -1,5 +1,10 @@
 """Open JSON file and serve."""
 
+from util.jsonp import jsonp
+from metadata.pos.views import POSTagger
+from metadata.stem.views import Stem
+from metadata.definition.views import Definition
+
 import json
 import os
 
@@ -7,10 +12,6 @@ from flask import Flask
 from flask import request  # for getting query string
 # eg: request.args.get('user') will get '?user=some-value'
 from flask_restful import Resource, Api
-from util.jsonp import jsonp
-from metadata.pos.views import POSTagger
-from metadata.stem.views import Stem
-from metadata.definition.views import Definition
 
 app = Flask(__name__)
 api = Api(app)
