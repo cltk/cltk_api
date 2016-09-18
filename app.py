@@ -1,4 +1,3 @@
-"""Open JSON file and serve."""
 
 from util.jsonp import jsonp
 from metadata.pos.views import POSTagger
@@ -11,28 +10,17 @@ import os
 from flask import Flask
 from flask import request  # for getting query string
 # eg: request.args.get('user') will get '?user=some-value'
-from flask_restful import Resource, Api
+from flask_restful import Api
+from flask_restful import Resource
+
 
 app = Flask(__name__)
 api = Api(app)
 
 
-# example
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
-
-
-# example
-class TodoSimple(Resource):
-    def get(self, todo_id):
-        return {'example with token': todo_id}
-
-
-def open_json(fp):
-    """Open json file, return json."""
-    with open(fp) as fo:
-        return json.load(fo)
+@app.route('/')
+def hello_world():
+    return 'The CLTK API'
 
 
 def get_cltk_text_dir(lang, corpus='perseus'):
@@ -42,8 +30,25 @@ def get_cltk_text_dir(lang, corpus='perseus'):
     return text_dir
 
 
-class Text(Resource):
+def open_json(fp):
+    """Open json file, return json."""
+    with open(fp) as fo:
+        return json.load(fo)
 
+
+# Simple example
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello': 'world'}
+
+
+# Simple example
+class TodoSimple(Resource):
+    def get(self, todo_id):
+        return {'example with token': todo_id}
+
+
+class Text(Resource):
     def get(self, lang, corpus, author, work):
 
         _dir = get_cltk_text_dir(lang)
@@ -81,35 +86,6 @@ class Text(Resource):
                         }
 
 
-class Lang(Resource):
-    def get(self):
-
-        cltk_home = os.path.expanduser('~/cltk_data')
-        dirs = os.listdir(cltk_home)
-        langs_with_perseus_corpus = []
-        for _dir_lang in dirs:
-            is_perseus_corpus = get_cltk_text_dir(_dir_lang)
-            if os.path.isdir(is_perseus_corpus):
-                langs_with_perseus_corpus.append(_dir_lang)
-
-        return {'languages': langs_with_perseus_corpus}
-
-
-class Corpus(Resource):
-
-    def get(self, lang):
-
-        possible_perseus_corpora_json = get_cltk_text_dir(lang)
-        possible_perseus_corpora = os.path.split(possible_perseus_corpora_json)[0]
-        is_perseus = os.path.isdir(possible_perseus_corpora)
-        corpora = []
-        if is_perseus and possible_perseus_corpora.endswith('_perseus'):
-            corpus_name = os.path.split(possible_perseus_corpora)[1]
-            corpora.append('perseus')
-
-        return {'language': lang,
-                'corpora': corpora}
-
 class Author(Resource):
     def get(self, lang, corpus):
 
@@ -127,6 +103,7 @@ class Author(Resource):
         return {'language': lang,
                 'authors': list(authors)}  # cast to list, set() not serializable
 
+
 class Texts(Resource):
     def get(self, lang, corpus, author):
         home_dir = os.path.expanduser('~/cltk_data')
@@ -143,6 +120,34 @@ class Texts(Resource):
                 'corpus': corpus,
                 'author': author,
                 'texts': texts}
+
+
+class Lang(Resource):
+    def get(self):
+        cltk_home = os.path.expanduser('~/cltk_data')
+        dirs = os.listdir(cltk_home)
+        langs_with_perseus_corpus = []
+        for _dir_lang in dirs:
+            is_perseus_corpus = get_cltk_text_dir(_dir_lang)
+            if os.path.isdir(is_perseus_corpus):
+                langs_with_perseus_corpus.append(_dir_lang)
+
+        return {'languages': langs_with_perseus_corpus}
+
+
+class Corpus(Resource):
+    def get(self, lang):
+        possible_perseus_corpora_json = get_cltk_text_dir(lang)
+        possible_perseus_corpora = os.path.split(possible_perseus_corpora_json)[0]
+        is_perseus = os.path.isdir(possible_perseus_corpora)
+        corpora = []
+        if is_perseus and possible_perseus_corpora.endswith('_perseus'):
+            corpus_name = os.path.split(possible_perseus_corpora)[1]
+            corpora.append('perseus')
+
+        return {'language': lang,
+                'corpora': corpora}
+
 
 # http://localhost:5000/lang/latin/corpus/perseus/author/vergil/text
 # http://localhost:5000/lang/greek/corpus/perseus/author/homer/text
@@ -171,14 +176,14 @@ api.add_resource(POSTagger, '/core/pos', endpoint='pos')
 # CLTK core stemmer
 api.add_resource(Stem, '/core/stem/<string:sentence>')
 
-# CLTK definitions 
+# CLTK definitions
 # http://localhost:5000/lang/latin/define/abante
 api.add_resource(Definition, '/lang/<string:lang>/define/<string:word>')
 
-# simple examples
+# Simple examples
 api.add_resource(TodoSimple, '/todo/<string:todo_id>')
-api.add_resource(HelloWorld, '/hello')
+# api.add_resource(HelloWorld, '/hello')
+
 
 if __name__ == '__main__':
-    #app.run(debug=True)
     app.run(host='0.0.0.0', debug=True)

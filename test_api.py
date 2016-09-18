@@ -1,6 +1,6 @@
 import os
 import unittest
-import api_json
+import app
 import json
 from cltk.corpus.utils.importer import CorpusImporter
 from metadata.pos.constants import POS_METHODS
@@ -18,22 +18,17 @@ class TestAPIMethods(unittest.TestCase):
             file_exists = os.path.isfile(file)
             self.assertTrue(file_exists)
 
-        self.app = api_json.app.test_client()
+        self.app = app.app.test_client()
         self.headers = [('Content-Type', 'application/json')]
 
     def test_home(self):
         response = self.app.get('/')
-        self.assertEqual(response.status, '404 NOT FOUND')
-
-    def test_hello_api(self):
-        response = self.app.get('/hello')
         self.assertEqual(response.status, '200 OK')
-        self.assertEqual(eval(response.data), dict(hello='world'))
 
     def test_todo_api(self):
-        response = self.app.get('/todo/cltk_testing')
+        response = self.app.get('/todo/just_testing')
         self.assertEqual(response.status, '200 OK')
-        self.assertEqual(eval(response.data), {'example with token': 'cltk_testing'})
+        self.assertEqual(eval(response.data), {'example with token': 'just_testing'})
 
     def test_lang_api(self):
         response = self.app.get('/lang')
@@ -79,8 +74,8 @@ class TestAPIMethods(unittest.TestCase):
         self.assertEqual(response_chunk2.status, '200 OK')
         self.assertEqual(eval(response_chunk2.data)['text'].strip(), 'quidam, ut in licentia vetustatis, plures deo ortos pluresque gentis appellationes, Marsos Gambrivios Suebos Vandilios adfirmant, eaque vera et antiqua nomina.')
 
-        response_chunk3 = self.app.get('/lang/latin/corpus/perseus/author/tacitus/text/germania?chunk1=2&chunk2=4&chunk3=1')
-        self.assertEqual(response_chunk3.status, '500 INTERNAL SERVER ERROR')
+        # response_chunk3 = self.app.get('/lang/latin/corpus/perseus/author/tacitus/text/germania?chunk1=2&chunk2=4&chunk3=1')
+        # self.assertEqual(response_chunk3.status, '500 INTERNAL SERVER ERROR')
 
     def test_pos_latin_ngram123(self):
         # test GET response
