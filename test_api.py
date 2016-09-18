@@ -1,9 +1,14 @@
+"""Test CLTK API."""
+
+from metadata.pos.constants import POS_METHODS
+
 import os
 import unittest
 import app
 import json
+
 from cltk.corpus.utils.importer import CorpusImporter
-from metadata.pos.constants import POS_METHODS
+
 
 class TestAPIMethods(unittest.TestCase):
     """Requires latin_text_perseus folder in ~/cltk_data/latin/text/latin_text_perseus"""
