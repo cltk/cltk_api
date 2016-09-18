@@ -1,4 +1,4 @@
-sudo: required  # ?
+sudo: false
 
 language: python
 
@@ -10,6 +10,4 @@ before_script:
   - pip install -r requirements.txt
 
 script:
-  # Notes on nose:
-  # Travis CI pre-installs `nose`
-  - nosetests
+  - nosetests  # Travis CI pre-installs `nose`
